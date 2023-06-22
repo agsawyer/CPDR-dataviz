@@ -1,0 +1,7 @@
+# Data #
+###################
+*.xml
+
+# OS generated files #
+######################
+.DS_Store
