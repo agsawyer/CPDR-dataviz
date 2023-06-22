@@ -1,28 +1,22 @@
 # importing libraries
 from xml.etree import ElementTree
 import os
-import csv
+import pandas as pd
 
 # finding spreadsheet
 os.chdir("/Users/aly/Desktop/CS/Projects/cpdr")
 # input file
 tree = ElementTree.parse("culturalpropertydisputesresource.WordPress.2023-05-11.xml")
-# output file 
-cpdrData = open("cpdr.csv", "w", newline='',encoding="utf-8")
-csvwriter = csv.writer(cpdrData)
 
-
-# # for postmetas
+# TODO: fix postmetas code
+# to find postmetas
 # from lxml import etree
 # root = tree.getroot()
 # rss = ElementTree.tostring(root, encoding='utf8', method='xml')
 # doc = etree.XML(rss)
 # ns = { (k if k else "xx"):(v) for k, v in doc.xpath('//namespace::*') }
-
-#searching, for example, for "_payment_method"
-#for company in doc.xpath("//wp:meta_key[.='_edit_last']/following-sibling::wp:meta_value/text()", namespaces=ns):
-#    print(company)
-
+# for time in doc.xpath("//wp:meta_key[.='_edit_last']/following-sibling::wp:meta_value/text()", namespaces=ns):
+#    print(time)
 
 root = tree.getroot()
 
@@ -39,8 +33,45 @@ for itemData in root.findall('.//item'):
     for i in categories:
         featureDict[i.attrib['domain']] = (i.text)
 
+    # adding item and it's library to the larger library
     itemDict[item] = featureDict
 
-print(itemDict)
-# done !
-cpdrData.close()
+
+# making dataframe from dictionary as items
+df = pd.DataFrame.from_dict(itemDict, orient="index")
+
+## deleting bad cpdrs ##
+
+# get list of all the items (column 1)
+itemNames = df.index.values.tolist()
+
+# finding getting list of the rows to be deleted
+badItems = []
+for i in itemNames:
+    if "[" in i:
+        badItems.append(i)
+
+# delete all of those rows, iterate through rows 
+df = df.drop(badItems)
+
+print(df)
+# # saving as csv file
+df.to_csv("cpdr.csv")
+
+## calculating counts of the info ##
+
+# list of column names
+columns = df.columns.tolist()
+
+# empty dataframe to store
+dfInfo = pd.DataFrame()
+
+# iterating through columns
+for i in columns:
+    newDf = df[i].value_counts().to_frame()
+    newDf.to_csv(i + ".csv")
+    dfInfo = pd.concat([dfInfo, newDf], axis=0)
+
+print(dfInfo)
+
+dfInfo.to_csv("cpdrcount.csv")
