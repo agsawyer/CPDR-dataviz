@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bar Chart Example</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    .bar {
+      fill: steelblue;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    // Load the data from the CSV file
+    d3.csv("cpdr_object_type.csv").then(function(data) {
+      // Convert numerical values from strings to numbers
+      data.forEach(function(d) {
+        d.type_count = +d.type_count;
+      });
+
+      // Sort the data based on type_count in descending order
+      data.sort(function(a, b) {
+        return b.type_count - a.type_count;
+      });
+
+      // Take only the top 15 items
+      var topData = data.slice(0, 15);
+
+      // Set up the dimensions for the chart
+      var margin = {top: 60, right: 20, bottom: 100, left: 40};
+      var width = 600 - margin.left - margin.right;
+      var height = 440 - margin.top - margin.bottom;
+
+      // Create the SVG element
+      var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // Add chart title
+      svg.append("text")
+        .attr("class", "chart-title")
+        .attr("x", width / 2)
+        .attr("y", -margin.top / 2)
+        .attr("text-anchor", "middle")
+        .text("Top 15 Most Common Objects in the CPDR");
+
+      // Set up the scales for the x and y axes
+      var x = d3.scaleBand()
+        .range([0, width])
+        .padding(0.1)
+        .domain(topData.map(function(d) { return d.object; }));
+
+      var y = d3.scaleLinear()
+        .range([height, 0])
+        .domain([0, d3.max(topData, function(d) { return d.type_count; })]);
+
+      // Create a linear color scale
+      var colorScale = d3.scaleLinear()
+        .domain([0, d3.max(topData, function(d) { return d.type_count; })])
+        .range(["#CCE5FF", "#0047B3"]); // Define the color range from light blue to dark blue
+
+      // Create the x and y axes
+      var xAxis = d3.axisBottom(x);
+      var yAxis = d3.axisLeft(y);
+
+      // Add the x and y axes to the chart
+      svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .attr("dx", "-0.8em")
+        .attr("dy", "0.15em")
+        .style("text-anchor", "end");
+
+      svg.append("g")
+        .call(yAxis);
+
+      // Create the bars for the chart
+      svg.selectAll(".bar")
+        .data(topData)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.object); })
+        .attr("width", x.bandwidth())
+        .attr("y", function(d) { return y(d.type_count); })
+        .attr("height", function(d) { return height - y(d.type_count); })
+        .style("fill", function(d) { return colorScale(d.type_count); });
+
+    });
+  </script>
+</body>
+</html>

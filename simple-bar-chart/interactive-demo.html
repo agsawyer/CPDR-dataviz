@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bar Chart Example</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    .bar {
+      fill: steelblue;
+    }
+  </style>
+</head>
+<body>
+  <input type="range" id="barSlider" min="1" max="50" value="15" step="1">
+  <label for="barSlider">Number of Bars: <span id="sliderValue">15</span></label>
+  <br><br>
+  <script>
+    // Load the data from the CSV file
+    d3.csv("cpdr_object_type.csv").then(function(data) {
+      // Convert numerical values from strings to numbers
+      data.forEach(function(d) {
+        d.type_count = +d.type_count;
+      });
+
+      // Sort the data based on type_count in descending order
+      data.sort(function(a, b) {
+        return b.type_count - a.type_count;
+      });
+
+      // Set up the dimensions for the chart
+      var margin = {top: 60, right: 20, bottom: 100, left: 40};
+      var width = 600 - margin.left - margin.right;
+      var height = 440 - margin.top - margin.bottom;
+
+      // Create the SVG element
+      var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // Add chart title
+      var chartTitle = svg.append("text")
+        .attr("class", "chart-title")
+        .attr("x", width / 2)
+        .attr("y", -margin.top / 2)
+        .attr("text-anchor", "middle");
+
+      // Set up the scales for the x and y axes
+      var x = d3.scaleBand()
+        .range([0, width])
+        .padding(0.1);
+
+      var y = d3.scaleLinear()
+        .range([height, 0]);
+
+      // Create a linear color scale
+      var colorScale = d3.scaleLinear()
+        .range(["#CCE5FF", "#0047B3"]); // Define the color range from light blue to dark blue
+
+      // Create the x and y axes
+      var xAxis = d3.axisBottom(x);
+      var yAxis = d3.axisLeft(y);
+
+      // Update chart based on slider value
+      function updateChart(numBars) {
+        // Take only the top numBars items
+        var topData = data.slice(0, numBars);
+
+        // Update the scales
+        x.domain(topData.map(function(d) { return d.object; }));
+        y.domain([0, d3.max(topData, function(d) { return d.type_count; })]);
+
+        // Update the chart title
+        chartTitle.text("Top " + numBars + " Most Common Objects in the CPDR");
+
+        // Update the x and y axes
+        svg.select(".x-axis")
+          .transition()
+          .duration(500)
+          .call(xAxis);
+
+        svg.select(".y-axis")
+          .transition()
+          .duration(500)
+          .call(yAxis);
+
+        // Create or update the bars
+        var bars = svg.selectAll(".bar")
+          .data(topData);
+
+        bars.enter().append("rect")
+          .attr("class", "bar")
+          .merge(bars)
+          .transition()
+          .duration(500)
+          .attr("x", function(d) { return x(d.object); })
+          .attr("width", x.bandwidth())
+          .attr("y", function(d) { return y(d.type_count); })
+          .attr("height", function(d) { return height - y(d.type_count); })
+          .style("fill", function(d) { return colorScale(d.type_count); });
+
+        bars.exit().remove();
+      }
+
+      // Initial chart display
+      updateChart(15);
+
+      // Handle slider change event
+      var slider = document.getElementById("barSlider");
+      var sliderValue = document.getElementById("sliderValue");
+
+      slider.oninput = function() {
+        var value = this.value;
+        sliderValue.textContent = value;
+        updateChart(+value);
+      };
+
+    });
+  </script>
+</body>
+</html>
