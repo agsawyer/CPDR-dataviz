@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 # finding spreadsheet
-os.chdir("/Users/aly/Desktop/CS/Projects/cpdr")
+os.chdir("/Users/asawyer/Desktop/CS/Projects/cpdr-dataviz/data-conversion")
 # input file
 tree = ElementTree.parse("culturalpropertydisputesresource.WordPress.2023-05-11.xml")
 
@@ -31,7 +31,13 @@ for itemData in root.findall('.//item'):
     # getting info from categories  
     categories = itemData.findall('category')
     for i in categories:
-        featureDict[i.attrib['domain']] = (i.text)
+        domain = i.attrib['domain']
+        category_text = i.text
+        
+        if domain in featureDict:
+            featureDict[domain].append(category_text)
+        else:
+            featureDict[domain] = [category_text]
 
     # adding item and it's library to the larger library
     itemDict[item] = featureDict
@@ -58,20 +64,20 @@ print(df)
 # # saving as csv file
 df.to_csv("cpdr.csv")
 
-## calculating counts of the info ##
+# ## calculating counts of the info ##
 
-# list of column names
-columns = df.columns.tolist()
+# # list of column names
+# columns = df.columns.tolist()
 
-# empty dataframe to store
-dfInfo = pd.DataFrame()
+# # empty dataframe to store
+# dfInfo = pd.DataFrame()
 
-# iterating through columns
-for i in columns:
-    newDf = df[i].value_counts().to_frame()
-    newDf.to_csv(i + ".csv")
-    dfInfo = pd.concat([dfInfo, newDf], axis=0)
+# # iterating through columns
+# for i in columns:
+#     newDf = df[i].value_counts().to_frame()
+#     newDf.to_csv(i + ".csv")
+#     dfInfo = pd.concat([dfInfo, newDf], axis=0)
 
-print(dfInfo)
+# print(dfInfo)
 
-dfInfo.to_csv("cpdrcount.csv")
+# dfInfo.to_csv("cpdrcount.csv")
