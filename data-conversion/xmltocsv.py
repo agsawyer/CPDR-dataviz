@@ -66,8 +66,6 @@ df.to_csv("cpdr.csv")
 
 # ## calculating counts of the info ##
 
-# # list of column names
-# columns = df.columns.tolist()
 
 # # empty dataframe to store
 # dfInfo = pd.DataFrame()
