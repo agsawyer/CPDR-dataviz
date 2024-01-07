@@ -2,6 +2,8 @@
 from xml.etree import ElementTree
 import os
 import pandas as pd
+from collections import Counter
+from collections import defaultdict
 
 # finding spreadsheet
 os.chdir("/Users/asawyer/Desktop/CS/Projects/cpdr-dataviz/data-conversion")
@@ -60,22 +62,113 @@ for i in itemNames:
 # delete all of those rows, iterate through rows 
 df = df.drop(badItems)
 
-print(df)
 # # saving as csv file
 df.to_csv("cpdr.csv")
 
-# ## calculating counts of the info ##
+## calculating counts of the info ##
+
+# list of column names
+columns = df.columns.tolist()
+
+# empty dataframe to store
+dfInfo = pd.DataFrame()
+
+# categories and sub categories for object type and material
+
+material_dict = {
+    'animal product': ['bone', 'ivory', 'leather', 'vellum', 'wool'],
+    'bark': [],
+    'ceramic': ['terracotta'],
+    'fabric/cloth': ['canvas', 'Linen'],
+    'gemstones': ['agate', 'diamond', 'turquoise'],
+    'glass': [],
+    'human remains': [],
+    'ink or dye': [],
+    'metal': ['brass', 'bronze', 'copper', 'gold', 'silver', 'steel'],
+    'paint': ['fresco', 'oil', 'tempera', 'watercolor'],
+    'paper': ['papier-mâché'],
+    'plaster': [],
+    'shell': [],
+    'stone': ['alabaster', 'basalt', 'chlorite', 'fuschite', 'granodiorite', 'limestone', 'marble', 'sandstone', 'soapstone', 'tuff'],
+    'wood': []
+}
+
+type_dict = {
+    'Amphora': [],
+    'Amulet': [],
+    'Animal Skeleton': [],
+    'Apparel': ['Belt'],
+    'Armor': [],
+    'Bead': [],
+    'Bell': [],
+    'Book': [],
+    'Bronze': [],
+    'Building': ['Column', 'Door', 'Strut', 'Window'],
+    'Bust': [],
+    'Candelabrum': [],
+    'Carving': [],
+    'Coffin': ['sarcophagus'],
+    'Coin': [],
+    'Cutlery': [],
+    'Cylinder Seal': [],
+    'Drawing': [],
+    'Figurine': [],
+    'Firearm': [],
+    'Folio': [],
+    'Food/Drink Container': ['Krater', 'Phiale'],
+    'Funerary Object': [],
+    'Furniture': ['Throne'],
+    'Game': [],
+    'Gemstone': [],
+    'Human Remains': [],
+    'Jewelry': ['Bracelet', 'Brooch', 'Ear ornament', 'Necklace'],
+    'Manuscript': ['Letter(s)'],
+    'Mask': [],
+    'Mold': [],
+    'Mosaic': [],
+    'Music Score': ['Choirbook'],
+    'Painting': [],
+    'Panel': ['Fresco', 'Mural', 'Relief'],
+    'Plaque or Tablet': [],
+    'Print': ['Monotype'],
+    'Relic': [],
+    'Relief': [],
+    'Religious Icon': [],
+    'Sculpture': ['Casting'],
+    'Seal': [],
+    'Shield': [],
+    'Sphinx': [],
+    'Statue': [],
+    'Stele': [],
+    'Storage container': ['Pithos'],
+    'Textile': [],
+    'Timepiece': [],
+    'Tombstone': [],
+    'Tool': [],
+    'Totem Pole': [],
+    'Vase': [],
+    'Vessel': [],
+    'Weapon': ['Axe', 'Spearhead'],
+    'Weight': []
+}
+
+print(columns)
 
 
-# # empty dataframe to store
-# dfInfo = pd.DataFrame()
 
-# # iterating through columns
-# for i in columns:
-#     newDf = df[i].value_counts().to_frame()
-#     newDf.to_csv(i + ".csv")
-#     dfInfo = pd.concat([dfInfo, newDf], axis=0)
+# iterating through columns
+for i in columns:
+    if i == "cpdr_object_type" or i == "cpdr_object_material":
+        # your code goes here
+        print("hi")
+        for j in df[i]:
+            print(j)
+        newDf = df[i].value_counts().to_frame()
+    # else:
+    #     newDf = df[i].value_counts().to_frame()
+        newDf.to_csv(i + ".csv")
+        dfInfo = pd.concat([dfInfo, newDf], axis=0)
 
-# print(dfInfo)
+print(dfInfo)
 
-# dfInfo.to_csv("cpdrcount.csv")
+dfInfo.to_csv("cpdrcount.csv")
