@@ -37,13 +37,13 @@
             
             .range(d3.schemeBlues[7]);
             
-        // Load external data and boot
-        d3.queue()
-            .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-            //.defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function (d) { data.set(d.code, +d.pop); })
-            .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/fakedata.csv", function (d) { data.set(d.code, +d.disputes); })
+        // // Load external data and boot
+        // d3.queue()
+        //     .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+        //     //.defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function (d) { data.set(d.code, +d.pop); })
+        //     .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/fakedata.csv", function (d) { data.set(d.code, +d.disputes); })
 
-            .await(ready);
+        //     .await(ready);
 
         function ready(error, topo) {
             var tooltip = d3.select('.tooltip-area')
@@ -73,16 +73,16 @@
                 console.log('mouseleave')
             }
 
-            // TODO: Fix thsi shit
-            let mousemove = function (event, d) {
-                tooltip
-                //     .html("Country: " + d.name + " Disputes: " + d.disputes + " M$")
-                    .style("left", (event.pageX + 30) + "px") 
-                    .style("top", (event.pageY) + "px")
-                //     console.log("Hi" + d.name);
-                // console.log("Country:" + event.properties.name + " Disputes: " + event.properties.disputes)
-                console.log(data)
-            }
+            // // TODO: Fix thsi shit
+            // let mousemove = function (event, d) {
+            //     tooltip
+            //     //     .html("Country: " + d.name + " Disputes: " + d.disputes + " M$")
+            //         .style("left", (event.pageX + 30) + "px") 
+            //         .style("top", (event.pageY) + "px")
+            //     //     console.log("Hi" + d.name);
+            //     // console.log("Country:" + event.properties.name + " Disputes: " + event.properties.disputes)
+            //     console.log(data)
+            // }
 
             // Draw the map
             svg.append("g")
