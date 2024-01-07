@@ -32,18 +32,16 @@
         // Data and color scale
         var data = d3.map();
         var colorScale = d3.scaleThreshold()
-            //.domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
             .domain([1, 5, 10, 50, 100, 300])
             
             .range(d3.schemeBlues[7]);
             
-        // // Load external data and boot
-        // d3.queue()
-        //     .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-        //     //.defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function (d) { data.set(d.code, +d.pop); })
-        //     .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/fakedata.csv", function (d) { data.set(d.code, +d.disputes); })
+        // Load external data and boot
+        d3.queue()
+            .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+            .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/world-map/fakedata.csv", function (d) { data.set(d.code, +d.disputes); })
 
-        //     .await(ready);
+            .await(ready);
 
         function ready(error, topo) {
             var tooltip = d3.select('.tooltip-area')
