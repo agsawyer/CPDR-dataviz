@@ -90,14 +90,7 @@
 
                 // Perform actions you want on click
                 console.log("Clicked on " + countryName + " - Disputes: " + dataDictionary[countryName]['disputes']);
-                // You can add more code here to handle the click event
             }
-
-            // // Disputes and country name on hover are logged
-            // // TODO: fix undefined countries 
-            // let mousemove = function (event, d) {
-            //     console.log("Country:" + event.properties.name + " Disputes: " + data.get(getCountryCode(event.properties.name)))
-            // }
 
             // Draw the map
             svg.append("g")
@@ -105,24 +98,24 @@
                 .data(topo.features)
                 .enter()
                 .append("path")
+
                 // draw each country
                 .attr("d", d3.geoPath()
                     .projection(projection)
                 )
+
                 // set the color of each country
                 .attr("fill", function (d) {
                     d.total = data.get(d.id) || 0;
                     return colorScale(d.total);
                 })
+
                 .style("stroke", "transparent")
                 .attr("class", function (d) { return "Country" })
                 .style("opacity", .8)
                 .on("mouseover", mouseOver)
                 .on("mouseleave", mouseLeave)
                 .on("click", clickHandler)
-
-                // //tenative
-                // .on("mousemove", mousemove)
                 
         }
 
