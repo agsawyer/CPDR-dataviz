@@ -12,7 +12,7 @@
 
 <body>
     <!-- Create an element where the map will take place -->
-    <svg id="my_dataviz" width="400" height="400"></svg>
+    <svg id="my_dataviz" width="600" height="600"></svg>
 
     <script>
 
@@ -108,12 +108,6 @@
                 .selectAll("path")
                 .data(topo.features)
                 .enter().append("path")
-                    // .attr("fill", "#b8b8b8")
-                    // .attr("d", d3.geoPath()
-                    //     .projection(projection)
-                    // )
-                    // .style("stroke", "#fff")
-                    // .style("stroke-width", 0)
                 // draw each country
                 .attr("d", d3.geoPath()
                     .projection(projection)
