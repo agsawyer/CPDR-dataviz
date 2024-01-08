@@ -12,10 +12,9 @@
 
 <body>
     <!-- Create an element where the map will take place -->
-    <svg id="my_dataviz" width="600" height="500"></svg>
+    <svg id="my_dataviz" width="400" height="400"></svg>
 
     <script>
-
 
         // The svg
         var svg = d3.select("svg"),
@@ -23,11 +22,14 @@
             height = +svg.attr("height");
 
         // Map and projection
-        var path = d3.geoPath();
         var projection = d3.geoMercator()
-            .scale(70)
-            .center([0, 20])
-            .translate([width / 2, height / 2]);
+            .scale(85)
+            // .center([0, 20])
+            .translate([width / 2, height / 2*1.3]);
+
+        // A path generator
+        var path = d3.geoPath()
+            .projection(projection)
 
         // Data and color scale
         var data = d3.map();
@@ -42,21 +44,20 @@
         // Load external data and boot
         d3.queue()
             .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-            // .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/world-map/fakedata.csv", function (d) { data.set(d.code, +d.disputes);})
+            .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectionmap.csv") // Position of circles
             .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/world-map/fakedata.csv", function (d) { 
                 data.set(d.code, +d.disputes);
 
                 // Assuming dataDictionary is already defined somewhere in your code
-                dataDictionary[d.name] = {
+                dataDictionary[d.code] = {
                     disputes: +d.disputes,
-                    code: +d.code
+                    name: +d.name
                 };
             })
-
             .await(ready);
 
 
-        function ready(error, topo) {
+        function ready(error, topo, data2) {
             var tooltip = d3.select('.tooltip-area')
                     .style('opacity', 0)
                     .html("Country: ")
@@ -89,16 +90,30 @@
                 var countryName = event.properties.name;
 
                 // Perform actions you want on click
-                console.log("Clicked on " + countryName + " - Disputes: " + dataDictionary[countryName]['disputes']);
+                console.log(event.id);
+                console.log("Clicked on " + countryName + " - Disputes: " + dataDictionary[event.id]['disputes']);
             }
+
+            // Reformat the list of link. Note that columns in csv file are called long1, long2, lat1, lat2
+            var link = []
+            data2.forEach(function(row){
+                source = [+row.long1, +row.lat1]
+                target = [+row.long2, +row.lat2]
+                topush = {type: "LineString", coordinates: [source, target]}
+                link.push(topush)
+            })
 
             // Draw the map
             svg.append("g")
                 .selectAll("path")
                 .data(topo.features)
-                .enter()
-                .append("path")
-
+                .enter().append("path")
+                    // .attr("fill", "#b8b8b8")
+                    // .attr("d", d3.geoPath()
+                    //     .projection(projection)
+                    // )
+                    // .style("stroke", "#fff")
+                    // .style("stroke-width", 0)
                 // draw each country
                 .attr("d", d3.geoPath()
                     .projection(projection)
@@ -111,11 +126,21 @@
                 })
 
                 .style("stroke", "transparent")
-                .attr("class", function (d) { return "Country" })
+                .attr("class", function (d) { return d.id })
                 .style("opacity", .8)
                 .on("mouseover", mouseOver)
                 .on("mouseleave", mouseLeave)
                 .on("click", clickHandler)
+
+                // Add the path
+                svg.selectAll("myPath")
+                    .data(link)
+                    .enter()
+                    .append("path")
+                        .attr("d", function(d){ return path(d)})
+                        .style("fill", "none")
+                        .style("stroke", "#69b3a2")
+                        .style("stroke-width", 2)
                 
         }
 

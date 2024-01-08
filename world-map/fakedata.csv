@@ -1,4 +1,4 @@
-name,code,disputes
+name,code,disputes,location(string of (lat long)),location of every other country - valid json
 Antigua and Barbuda,ATG,0
 Algeria,DZA,0
 Azerbaijan,AZE,0
