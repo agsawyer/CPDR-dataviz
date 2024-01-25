@@ -1,17 +1,18 @@
-# importing libraries
 from xml.etree import ElementTree
 import os
 import pandas as pd
 from collections import Counter
 from collections import defaultdict
+import pycountry
 
-# finding spreadsheet
-os.chdir("/Users/asawyer/Desktop/CS/Projects/cpdr-dataviz/data-conversion")
+##############################################
+## getting data from exported wordpress xml ## 
+##############################################
+
 # input file
 tree = ElementTree.parse("culturalpropertydisputesresource.WordPress.2023-05-11.xml")
 
-# TODO: fix postmetas code
-# to find postmetas
+# TODO: fix postmetas code - it can't currently get postmeta data 
 # from lxml import etree
 # root = tree.getroot()
 # rss = ElementTree.tostring(root, encoding='utf8', method='xml')
@@ -48,7 +49,9 @@ for itemData in root.findall('.//item'):
 # making dataframe from dictionary as items
 df = pd.DataFrame.from_dict(itemDict, orient="index")
 
-## deleting bad cpdrs ##
+#############################
+## deleting unusable cpdrs ##
+#############################
 
 # get list of all the items (column 1)
 itemNames = df.index.values.tolist()
@@ -62,113 +65,181 @@ for i in itemNames:
 # delete all of those rows, iterate through rows 
 df = df.drop(badItems)
 
+# Convert list columns to strings
+for column in df.columns:
+    if isinstance(df[column][0], list):
+        df[column] = df[column].apply(lambda x: str(x) if x is not None else None)
+    
 # # saving as csv file
 df.to_csv("cpdr.csv")
 
+####################################
 ## calculating counts of the info ##
+####################################
+
+def get_country_code(country_name):
+    try:
+        country = pycountry.countries.get(name=country_name)
+        return country.alpha_3
+    except AttributeError:
+        return None
+
 
 # list of column names
 columns = df.columns.tolist()
 
-# empty dataframe to store
-dfInfo = pd.DataFrame()
+#################################
+## getting country codes names ##
+#################################
 
-# categories and sub categories for object type and material
-
-material_dict = {
-    'animal product': ['bone', 'ivory', 'leather', 'vellum', 'wool'],
-    'bark': [],
-    'ceramic': ['terracotta'],
-    'fabric/cloth': ['canvas', 'Linen'],
-    'gemstones': ['agate', 'diamond', 'turquoise'],
-    'glass': [],
-    'human remains': [],
-    'ink or dye': [],
-    'metal': ['brass', 'bronze', 'copper', 'gold', 'silver', 'steel'],
-    'paint': ['fresco', 'oil', 'tempera', 'watercolor'],
-    'paper': ['papier-mâché'],
-    'plaster': [],
-    'shell': [],
-    'stone': ['alabaster', 'basalt', 'chlorite', 'fuschite', 'granodiorite', 'limestone', 'marble', 'sandstone', 'soapstone', 'tuff'],
-    'wood': []
-}
-
-type_dict = {
-    'Amphora': [],
-    'Amulet': [],
-    'Animal Skeleton': [],
-    'Apparel': ['Belt'],
-    'Armor': [],
-    'Bead': [],
-    'Bell': [],
-    'Book': [],
-    'Bronze': [],
-    'Building': ['Column', 'Door', 'Strut', 'Window'],
-    'Bust': [],
-    'Candelabrum': [],
-    'Carving': [],
-    'Coffin': ['sarcophagus'],
-    'Coin': [],
-    'Cutlery': [],
-    'Cylinder Seal': [],
-    'Drawing': [],
-    'Figurine': [],
-    'Firearm': [],
-    'Folio': [],
-    'Food/Drink Container': ['Krater', 'Phiale'],
-    'Funerary Object': [],
-    'Furniture': ['Throne'],
-    'Game': [],
-    'Gemstone': [],
-    'Human Remains': [],
-    'Jewelry': ['Bracelet', 'Brooch', 'Ear ornament', 'Necklace'],
-    'Manuscript': ['Letter(s)'],
-    'Mask': [],
-    'Mold': [],
-    'Mosaic': [],
-    'Music Score': ['Choirbook'],
-    'Painting': [],
-    'Panel': ['Fresco', 'Mural', 'Relief'],
-    'Plaque or Tablet': [],
-    'Print': ['Monotype'],
-    'Relic': [],
-    'Relief': [],
-    'Religious Icon': [],
-    'Sculpture': ['Casting'],
-    'Seal': [],
-    'Shield': [],
-    'Sphinx': [],
-    'Statue': [],
-    'Stele': [],
-    'Storage container': ['Pithos'],
-    'Textile': [],
-    'Timepiece': [],
-    'Tombstone': [],
-    'Tool': [],
-    'Totem Pole': [],
-    'Vase': [],
-    'Vessel': [],
-    'Weapon': ['Axe', 'Spearhead'],
-    'Weight': []
-}
-
-print(columns)
+# making csv file for countries
+countries = df["cpdr_respondent_nation"].tolist()
+countries.append(df["cpdr_complainant_nation"].tolist())
+new_countries = []
+for country in countries:
+    if country != "['2 or more respondent nations']" and type(country) != list:
+        country = country.strip("[]").strip('\'\'')
+        if country not in new_countries:
+            new_countries.append(country) 
 
 
+countries_and_codes = {}
 
-# iterating through columns
-for i in columns:
-    if i == "cpdr_object_type" or i == "cpdr_object_material":
-        # your code goes here
-        print("hi")
-        for j in df[i]:
-            print(j)
-        newDf = df[i].value_counts().to_frame()
-    # else:
-    #     newDf = df[i].value_counts().to_frame()
-        newDf.to_csv(i + ".csv")
-        dfInfo = pd.concat([dfInfo, newDf], axis=0)
+# TODO: find a better library that doesn't need this 
+exceptions = {'Taiwan': 'TWN', 'South Korea': 'KOR', 'Syria': 'SYR', 'Bolivia': 'BOL', 'Russia': 'RUS', 'Australia': 'AUS'}
 
-print(dfInfo)
+for country in new_countries:
+    code = get_country_code(country)
+    countries_and_codes[country] = code
+    # exceptions 
+    if country in exceptions: 
+        countries_and_codes[country] = exceptions[country]
 
-dfInfo.to_csv("cpdrcount.csv")
+####################################
+## generating csv file by country ##
+####################################
+
+# making csv file for categories
+grouped_df = df.groupby('cpdr_respondent_nation')
+
+dfs = []
+
+def clean_string(s):
+    """
+    Clean up a string with square brackets and quotes.
+    Example: "['Australia']" becomes "Australia".
+    """
+    s = s.strip("[]")  # Remove square brackets
+    s = s.replace("'", "")  # Remove single quotes
+    return s
+
+# loop through each group
+for name, group in grouped_df:
+    if name != "['2 or more respondent nations']" and name != "nan":
+        # count the occurrences of each nation
+        count = group.shape[0]
+
+        complainant_counts = group['cpdr_complainant_nation'].value_counts().to_dict()
+
+        # resolution_counts = group['cpdr_complainant_nation'].value_counts().to_dict()
+        
+        # aggregate the information
+        aggregated_info = {
+            'Country': clean_string(name),
+            'Country_Code': countries_and_codes[clean_string(name)],
+            'Total_Cases': count,
+            'Complainant_Nations': complainant_counts,
+            'Means_of_Resolution': group['cpdr_means_of_resolution'].tolist(),
+        }
+        
+        # Create a DataFrame for the aggregated information
+        aggregated_df = pd.DataFrame([aggregated_info])
+    
+        # Append the DataFrame to the list
+        dfs.append(aggregated_df)
+
+# Concatenate all DataFrames in the list
+aggregated_df = pd.concat(dfs, ignore_index=True)
+
+# Save the aggregated DataFrame to a new CSV file
+aggregated_df.to_csv('output_file.csv', index=False)
+
+
+# # categories and sub categories for object type and material
+
+# material_dict = {
+#     'animal product': ['bone', 'ivory', 'leather', 'vellum', 'wool'],
+#     'bark': [],
+#     'ceramic': ['terracotta'],
+#     'fabric/cloth': ['canvas', 'Linen'],
+#     'gemstones': ['agate', 'diamond', 'turquoise'],
+#     'glass': [],
+#     'human remains': [],
+#     'ink or dye': [],
+#     'metal': ['brass', 'bronze', 'copper', 'gold', 'silver', 'steel'],
+#     'paint': ['fresco', 'oil', 'tempera', 'watercolor'],
+#     'paper': ['papier-mâché'],
+#     'plaster': [],
+#     'shell': [],
+#     'stone': ['alabaster', 'basalt', 'chlorite', 'fuschite', 'granodiorite', 'limestone', 'marble', 'sandstone', 'soapstone', 'tuff'],
+#     'wood': []
+# }
+
+# type_dict = {
+#     'Amphora': [],
+#     'Amulet': [],
+#     'Animal Skeleton': [],
+#     'Apparel': ['Belt'],
+#     'Armor': [],
+#     'Bead': [],
+#     'Bell': [],
+#     'Book': [],
+#     'Bronze': [],
+#     'Building': ['Column', 'Door', 'Strut', 'Window'],
+#     'Bust': [],
+#     'Candelabrum': [],
+#     'Carving': [],
+#     'Coffin': ['sarcophagus'],
+#     'Coin': [],
+#     'Cutlery': [],
+#     'Cylinder Seal': [],
+#     'Drawing': [],
+#     'Figurine': [],
+#     'Firearm': [],
+#     'Folio': [],
+#     'Food/Drink Container': ['Krater', 'Phiale'],
+#     'Funerary Object': [],
+#     'Furniture': ['Throne'],
+#     'Game': [],
+#     'Gemstone': [],
+#     'Human Remains': [],
+#     'Jewelry': ['Bracelet', 'Brooch', 'Ear ornament', 'Necklace'],
+#     'Manuscript': ['Letter(s)'],
+#     'Mask': [],
+#     'Mold': [],
+#     'Mosaic': [],
+#     'Music Score': ['Choirbook'],
+#     'Painting': [],
+#     'Panel': ['Fresco', 'Mural', 'Relief'],
+#     'Plaque or Tablet': [],
+#     'Print': ['Monotype'],
+#     'Relic': [],
+#     'Relief': [],
+#     'Religious Icon': [],
+#     'Sculpture': ['Casting'],
+#     'Seal': [],
+#     'Shield': [],
+#     'Sphinx': [],
+#     'Statue': [],
+#     'Stele': [],
+#     'Storage container': ['Pithos'],
+#     'Textile': [],
+#     'Timepiece': [],
+#     'Tombstone': [],
+#     'Tool': [],
+#     'Totem Pole': [],
+#     'Vase': [],
+#     'Vessel': [],
+#     'Weapon': ['Axe', 'Spearhead'],
+#     'Weight': []
+# }
