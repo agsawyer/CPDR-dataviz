@@ -141,15 +141,40 @@ for name, group in grouped_df:
 
         complainant_counts = group['cpdr_complainant_nation'].value_counts().to_dict()
 
-        # resolution_counts = group['cpdr_complainant_nation'].value_counts().to_dict()
+        responses = group['cpdr_case_status'].tolist()
+
+        complainant_counts = group['cpdr_complainant_nation'].value_counts().to_dict()
+        cleaned_complainant_counts = {clean_string(k): v for k, v in complainant_counts.items()}
+
         
+        # calculate result percentages
+        # Count occurrences of each unique response
+        response_counts = {}
+        for response in responses:
+            if response in response_counts:
+                response_counts[response] += 1
+            else:
+                response_counts[response] = 1
+
+        # Calculate percentage for each unique response
+        total_responses = len(responses)
+        percentage_distribution = {response: (count / total_responses) * 100 for response, count in response_counts.items()}
+
+        # Print the results
+        response_list = []
+        for response, percentage in percentage_distribution.items():
+            if response == 'nan':
+                response = 'Unknown'
+            response_list.append((f"{clean_string(response)}: {percentage:.2f}%"))
+
+        print(response_list)
         # aggregate the information
         aggregated_info = {
             'name': clean_string(name),
             'code': countries_and_codes[clean_string(name)],
             'disputes': count,
-            'complainant_nations': complainant_counts,
-            'resolution': group['cpdr_means_of_resolution'].tolist(),
+            'complainant_nations': cleaned_complainant_counts,
+            'case_status': response_list,
         }
         
         # Create a DataFrame for the aggregated information
@@ -164,82 +189,3 @@ aggregated_df = pd.concat(dfs, ignore_index=True)
 # Save the aggregated DataFrame to a new CSV file
 aggregated_df.to_csv('output_file.csv', index=False)
 
-
-# # categories and sub categories for object type and material
-
-# material_dict = {
-#     'animal product': ['bone', 'ivory', 'leather', 'vellum', 'wool'],
-#     'bark': [],
-#     'ceramic': ['terracotta'],
-#     'fabric/cloth': ['canvas', 'Linen'],
-#     'gemstones': ['agate', 'diamond', 'turquoise'],
-#     'glass': [],
-#     'human remains': [],
-#     'ink or dye': [],
-#     'metal': ['brass', 'bronze', 'copper', 'gold', 'silver', 'steel'],
-#     'paint': ['fresco', 'oil', 'tempera', 'watercolor'],
-#     'paper': ['papier-mâché'],
-#     'plaster': [],
-#     'shell': [],
-#     'stone': ['alabaster', 'basalt', 'chlorite', 'fuschite', 'granodiorite', 'limestone', 'marble', 'sandstone', 'soapstone', 'tuff'],
-#     'wood': []
-# }
-
-# type_dict = {
-#     'Amphora': [],
-#     'Amulet': [],
-#     'Animal Skeleton': [],
-#     'Apparel': ['Belt'],
-#     'Armor': [],
-#     'Bead': [],
-#     'Bell': [],
-#     'Book': [],
-#     'Bronze': [],
-#     'Building': ['Column', 'Door', 'Strut', 'Window'],
-#     'Bust': [],
-#     'Candelabrum': [],
-#     'Carving': [],
-#     'Coffin': ['sarcophagus'],
-#     'Coin': [],
-#     'Cutlery': [],
-#     'Cylinder Seal': [],
-#     'Drawing': [],
-#     'Figurine': [],
-#     'Firearm': [],
-#     'Folio': [],
-#     'Food/Drink Container': ['Krater', 'Phiale'],
-#     'Funerary Object': [],
-#     'Furniture': ['Throne'],
-#     'Game': [],
-#     'Gemstone': [],
-#     'Human Remains': [],
-#     'Jewelry': ['Bracelet', 'Brooch', 'Ear ornament', 'Necklace'],
-#     'Manuscript': ['Letter(s)'],
-#     'Mask': [],
-#     'Mold': [],
-#     'Mosaic': [],
-#     'Music Score': ['Choirbook'],
-#     'Painting': [],
-#     'Panel': ['Fresco', 'Mural', 'Relief'],
-#     'Plaque or Tablet': [],
-#     'Print': ['Monotype'],
-#     'Relic': [],
-#     'Relief': [],
-#     'Religious Icon': [],
-#     'Sculpture': ['Casting'],
-#     'Seal': [],
-#     'Shield': [],
-#     'Sphinx': [],
-#     'Statue': [],
-#     'Stele': [],
-#     'Storage container': ['Pithos'],
-#     'Textile': [],
-#     'Timepiece': [],
-#     'Tombstone': [],
-#     'Tool': [],
-#     'Totem Pole': [],
-#     'Vase': [],
-#     'Vessel': [],
-#     'Weapon': ['Axe', 'Spearhead'],
-#     'Weight': []
-# }

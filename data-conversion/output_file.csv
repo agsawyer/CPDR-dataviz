@@ -1,39 +1,39 @@
-name,code,disputes
-Australia,AUS,6
-Austria,AUT,3
-Belgium,BEL,4
-Bolivia,BOL,1
-Bulgaria,BGR,1
-Canada,CAN,8
-China,CHN,1
-Denmark,DNK,3
-Finland,FIN,1
-France,FRA,23
-Germany,DEU,25
-Greece,GRC,1
-Hungary,HUN,1
-India,IND,1
-Iraq,IRQ,1
-Israel,ISR,1
-Italy,ITA,6
-Japan,JPN,10
-Jordan,JOR,1
-Mexico,MEX,1
-Namibia,NAM,2
-Netherlands,NLD,9
-New Zealand,NZL,1
-Norway,NOR,1
-Russia,RUS,4
-Saudi Arabia,SAU,2
-South Africa,ZAF,1
-South Korea,KOR,9
-Spain,ESP,2
-Sweden,SWE,2
-Switzerland,CHE,8
-Syria,SYR,1
-Taiwan,TWN,1
-Thailand,THA,11
-Tunisia,TUN,1
-Turkey,TUR,1
-United Kingdom,GBR,47
-United States,USA,262
+name,code,disputes,complainant_nations,case_status
+Australia,AUS,6,"{'India': 3, 'Cambodia': 1, 'China': 1, 'Nepal': 1}","['Object(s) relinquished: 66.67%', 'Object(s) not relinquished: 16.67%', 'Unresolved: 16.67%']"
+Austria,AUT,3,"{'Nigeria': 1, 'Cyprus': 1, 'Poland': 1}","['Object(s) not relinquished: 33.33%', 'Object(s) relinquished: 66.67%']"
+Belgium,BEL,4,"{'Congo (Kinshasa)': 1, 'Egypt': 1, 'Democratic Republic of the Congo': 1, 'Italy': 1}",['Object(s) relinquished: 100.00%']
+Bolivia,BOL,1,{'Peru': 1},['Object(s) not relinquished: 100.00%']
+Bulgaria,BGR,1,{'United Kingdom': 1},['Object(s) relinquished: 100.00%']
+Canada,CAN,8,"{'Egypt': 3, 'India': 2, 'China': 1, 'Kenya': 1, 'Bolivia': 1}","['Object(s) relinquished: 62.50%', 'Object(s) not relinquished: 25.00%', 'Some objects relinquished: 12.50%']"
+China,CHN,1,{'China': 1},['Object(s) relinquished: 100.00%']
+Denmark,DNK,3,"{'Greenland': 2, 'Iceland': 1}",['Object(s) relinquished: 100.00%']
+Finland,FIN,1,{'Namibia': 1},['Object(s) relinquished: 100.00%']
+France,FRA,23,"{'Nigeria': 5, 'China': 3, 'Vietnam': 2, 'Romania': 1, 'Cambodia': 1, 'Egypt': 1, 'South Korea': 1, 'Nepal': 1, 'Iran': 1, 'nan': 1, 'Iraq': 1, 'Turkey': 1, 'France': 1, 'United States': 1, 'Peru': 1, 'Benin': 1}","['Object(s) relinquished: 52.17%', 'Object(s) not relinquished: 39.13%', 'Unresolved: 4.35%', 'Some objects relinquished: 4.35%']"
+Germany,DEU,25,"{'Turkey': 5, 'Mexico': 3, 'Egypt': 3, 'Nigeria': 2, 'Cyprus': 2, 'Iraq': 2, 'United States': 1, 'Poland': 1, 'United Kingdom': 1, 'Estonia': 1, 'Romania': 1, 'Zimbabwe': 1, 'Greece': 1, 'Guatemala': 1}","['Object(s) not relinquished: 28.00%', 'Object(s) relinquished: 72.00%']"
+Greece,GRC,1,{'Germany': 1},['Object(s) relinquished: 100.00%']
+Hungary,HUN,1,{'Armenia': 1},['Unknown: 100.00%']
+India,IND,1,{'China': 1},['Object(s) relinquished: 100.00%']
+Iraq,IRQ,1,{'United States': 1},['Object(s) not relinquished: 100.00%']
+Israel,ISR,1,{'Germany': 1},['Object(s) not relinquished: 100.00%']
+Italy,ITA,6,"{'Ecuador': 2, 'New Zealand': 1, 'United States': 1, 'Libya': 1, 'Mexico': 1}","['Object(s) relinquished: 83.33%', 'Object(s) not relinquished: 16.67%']"
+Japan,JPN,10,"{'South Korea': 8, 'Vietnam': 2}","['Object(s) relinquished: 90.00%', 'Object(s) not relinquished: 10.00%']"
+Jordan,JOR,1,{'Iraq': 1},['Object(s) relinquished: 100.00%']
+Mexico,MEX,1,{'France': 1},['Object(s) not relinquished: 100.00%']
+Namibia,NAM,2,{'China': 2},['Object(s) not relinquished: 100.00%']
+Netherlands,NLD,9,"{'Iraq': 1, 'nan': 1, 'China': 1, 'Cyprus': 1, 'Indonesia': 1, 'Russia': 1, 'Sri Lanka': 1, 'Panama': 1, 'Mexico': 1}","['Object(s) relinquished: 55.56%', 'Object(s) not relinquished: 22.22%', 'Some objects relinquished: 11.11%', 'Unresolved: 11.11%']"
+New Zealand,NZL,1,{'Nepal': 1},['Object(s) not relinquished: 100.00%']
+Norway,NOR,1,{'China': 1},['Object(s) relinquished: 100.00%']
+Russia,RUS,4,"{'Germany': 2, 'Iran': 1, 'Greece': 1}","['Object(s) not relinquished: 50.00%', 'Unresolved: 25.00%', 'Object(s) relinquished: 25.00%']"
+Saudi Arabia,SAU,2,{'Iraq': 2},['Object(s) relinquished: 100.00%']
+South Africa,ZAF,1,{'South Africa': 1},['Object(s) not relinquished: 100.00%']
+South Korea,KOR,9,{'Japan': 9},"['Object(s) not relinquished: 88.89%', 'Object(s) relinquished: 11.11%']"
+Spain,ESP,2,"{'Egypt': 1, 'Guatemala': 1}","['Object(s) not relinquished: 50.00%', 'Unresolved: 50.00%']"
+Sweden,SWE,2,"{'Canada': 1, 'Peru': 1}",['Object(s) relinquished: 100.00%']
+Switzerland,CHE,8,"{'Egypt': 2, 'New Zealand': 2, 'Italy': 2, 'Romania': 1, 'Iraq': 1}","['Object(s) relinquished: 87.50%', 'Unknown: 12.50%']"
+Syria,SYR,1,{'Iraq': 1},['Object(s) relinquished: 100.00%']
+Taiwan,TWN,1,{'China': 1},['Object(s) not relinquished: 100.00%']
+Thailand,THA,11,{'Cambodia': 11},"['Object(s) relinquished: 81.82%', 'Object(s) not relinquished: 9.09%', 'Some objects relinquished: 9.09%']"
+Tunisia,TUN,1,{'Algeria': 1},['Object(s) relinquished: 100.00%']
+Turkey,TUR,1,{'Cyprus': 1},['Object(s) relinquished: 100.00%']
+United Kingdom,GBR,47,"{'Egypt': 9, 'Nigeria': 7, 'China': 4, 'Ethiopia': 2, 'Cyprus': 2, 'nan': 2, 'Iraq': 2, 'Hungary': 2, 'Iran': 2, 'India': 2, 'Kenya': 2, 'Poland': 1, 'Afghanistan': 1, 'Romania': 1, 'Netherlands': 1, 'Italy': 1, 'Indonesia': 1, 'Greece': 1, 'Ghana': 1, 'Chile': 1, 'Australia': 1, 'Turkey': 1}","['Object(s) not relinquished: 40.43%', 'Some objects relinquished: 6.38%', 'Object(s) relinquished: 46.81%', 'Unresolved: 6.38%']"
+United States,USA,262,"{'Italy': 66, 'Iraq': 21, 'Cambodia': 18, 'China': 16, 'Greece': 12, 'Egypt': 11, 'Thailand': 11, 'Turkey': 11, 'United States': 9, 'Nigeria': 8, 'India': 6, 'Nepal': 6, 'Mexico': 5, 'France': 5, 'Russia': 5, 'Kenya': 5, 'Germany': 5, 'Afghanistan': 4, 'Poland': 4, 'South Korea': 4, 'Romania': 3, 'Peru': 3, 'Cyprus': 3, 'United States Tribal Nations': 3, 'Iran': 2, 'Guatemala': 2, 'nan': 2, 'Palestine': 1, 'Ecuador': 1, 'Yemen': 1, 'Vietnam': 1, 'Spain': 1, 'Bolivia': 1, 'Mali': 1, 'Australia': 1, 'Syria': 1, 'Bulgaria': 1, 'Cameroon': 1, 'Lebanon': 1}","['Object(s) relinquished: 84.35%', 'Object(s) not relinquished: 12.21%', 'Some objects relinquished: 2.29%', 'Unknown: 0.38%', 'Unresolved: 0.76%']"
