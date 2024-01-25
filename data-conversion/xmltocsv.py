@@ -145,11 +145,11 @@ for name, group in grouped_df:
         
         # aggregate the information
         aggregated_info = {
-            'Country': clean_string(name),
-            'Country_Code': countries_and_codes[clean_string(name)],
-            'Total_Cases': count,
-            'Complainant_Nations': complainant_counts,
-            'Means_of_Resolution': group['cpdr_means_of_resolution'].tolist(),
+            'name': clean_string(name),
+            'code': countries_and_codes[clean_string(name)],
+            'disputes': count,
+            # 'Complainant_Nations': complainant_counts,
+            # 'Means_of_Resolution': group['cpdr_means_of_resolution'].tolist(),
         }
         
         # Create a DataFrame for the aggregated information
