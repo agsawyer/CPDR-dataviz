@@ -45,13 +45,15 @@
         d3.queue()
             .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
             .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectionmap.csv") // Position of circles
-            .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/world-map/fakedata.csv", function (d) { 
+            .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/world-map/real-test.csv", function (d) { 
                 data.set(d.code, +d.disputes);
 
                 // Assuming dataDictionary is already defined somewhere in your code
                 dataDictionary[d.code] = {
                     disputes: +d.disputes,
-                    name: +d.name
+                    name: +d.name,
+                    complainant_nations: +d.complainant_nations,
+                    case_status: +d.case_status
                 };
             })
             .await(ready);
