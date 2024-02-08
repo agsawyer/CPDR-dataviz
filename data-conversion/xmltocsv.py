@@ -183,6 +183,8 @@ for name, group in grouped_df:
         # Append the DataFrame to the list
         dfs.append(aggregated_df)
 
+
+
 # Concatenate all DataFrames in the list
 aggregated_df = pd.concat(dfs, ignore_index=True)
 
