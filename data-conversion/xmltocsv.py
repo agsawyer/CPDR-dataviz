@@ -4,6 +4,7 @@ import pandas as pd
 from collections import Counter
 from collections import defaultdict
 import pycountry
+import csv 
 
 ##############################################
 ## getting data from exported wordpress xml ## 
@@ -183,7 +184,36 @@ for name, group in grouped_df:
         # Append the DataFrame to the list
         dfs.append(aggregated_df)
 
+  
+to_add = {}
+# including rest of countries 
+with open('all-countries.csv') as file_obj: 
+      
+    # Create reader object by passing the file  
+    # object to reader method 
+    reader_obj = csv.reader(file_obj) 
+      
+    # Iterate over each row in the csv  
+    # file using reader object 
+    for row in reader_obj: 
+        if row[0] not in countries_and_codes:
+            to_add[row[0]] = row[1]
 
+# adding to output fle
+for country, code in to_add.items():
+    aggregated_info = {
+        'name': country,
+        'code': code,
+        'disputes': 0,
+        'complainant_nations': {},
+        'case_status': [],
+    }
+    
+    # Create a DataFrame for the aggregated information
+    aggregated_df = pd.DataFrame([aggregated_info])
+    
+    # Append the DataFrame to the list
+    dfs.append(aggregated_df)
 
 # Concatenate all DataFrames in the list
 aggregated_df = pd.concat(dfs, ignore_index=True)
