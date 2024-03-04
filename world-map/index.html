@@ -16,10 +16,6 @@
 
     <script>
 
-        // Legend(d3.scaleSequentialLog([1, 100], d3.interpolateBlues), {
-        // title: "Energy (joules)",
-        // ticks: 10
-        // })
 
         // The svg
         var svg = d3.select("svg"),
@@ -133,15 +129,15 @@
                 .on("mouseleave", mouseLeave)
                 .on("click", clickHandler)
 
-                // // Add the path
-                // svg.selectAll("myPath")
-                //     .data(link)
-                //     .enter()
-                //     .append("path")
-                //         .attr("d", function(d){ return path(d)})
-                //         .style("fill", "none")
-                //         .style("stroke", "#69b3a2")
-                //         .style("stroke-width", 2)
+                // Add the path
+                svg.selectAll("myPath")
+                    .data(link)
+                    .enter()
+                    .append("path")
+                        .attr("d", function(d){ return path(d)})
+                        .style("fill", "none")
+                        .style("stroke", "#69b3a2")
+                        .style("stroke-width", 2)
                 
         }
 
