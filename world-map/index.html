@@ -46,25 +46,28 @@
         d3.queue()
             .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
             .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectionmap.csv") // Position of circles
+            .defer(d3.csv, "https://gist.githubusercontent.com/metal3d/5b925077e66194551df949de64e910f6/raw/c5f20a037409d96958553e2eb6b8251265c6fd63/country-coord.csv") // location of each country 
             .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/world-map/real-test.csv", function (d) { 
                 data.set(d.code, +d.disputes);
-
-                // Assuming dataDictionary is already defined somewhere in your code
                 dataDictionary[d.code] = {
                     disputes: +d.disputes,
-                    name: +d.name,
-                    complainant_nations: +d.complainant_nations,
-                    case_status: +d.case_status
+                    name: d.name,
+                    complainant_nations: d.complainant_nations,
+                    case_status: d.case_status
                 };
             })
             .await(ready);
+        
+        // function nameToCoords(name) {
 
+        //     return lat,long;
+        // }
 
         function ready(error, topo, data2) {
             var tooltip = d3.select('.tooltip-area')
                     .style('opacity', 0)
                     .html("Country: ")
-                
+            
             let mouseOver = function (event, d) {
                 d3.selectAll(".Country")
                     .transition()
@@ -95,6 +98,8 @@
                 // Perform actions you want on click
                 console.log(event.id);
                 console.log("Clicked on " + countryName + " - Disputes: " + dataDictionary[event.id]['disputes']);
+
+                console.log(dataDictionary[event.id].complainant_nations);
             }
 
             // Reformat the list of link. Note that columns in csv file are called long1, long2, lat1, lat2

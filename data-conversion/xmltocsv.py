@@ -174,7 +174,7 @@ for name, group in grouped_df:
             'name': clean_string(name),
             'code': countries_and_codes[clean_string(name)],
             'disputes': count,
-            'complainant_nations': cleaned_complainant_counts,
+            'complainant_nations': {"countries": cleaned_complainant_counts},
             'case_status': response_list,
         }
         
