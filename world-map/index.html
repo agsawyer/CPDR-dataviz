@@ -110,6 +110,12 @@
                     tooltip.text("Country: " + countryName + ", Disputes: " + dataDictionary[event.id]['disputes'] + ", Resolution Statistics: " + dataDictionary[event.id]['case_status']);
                 }
                 console.log(dataDictionary[event.id]['latitude'], dataDictionary[event.id].longitude)
+
+                // when the country is clicked on, draw a path from that country to the other countries that it is in a dispute with
+                var source = [dataDictionary[event.id].longitude, dataDictionary[event.id].latitude]
+                var target = [100, 100]
+                topush = {type: "LineString", coordinates: [source, target]}
+                link.push(topush)
             }
 
             
@@ -152,15 +158,15 @@
                 .on("mouseleave", mouseLeave)
                 .on("click", clickHandler)
 
-                // Add the path
-                svg.selectAll("myPath")
-                    .data(link)
-                    .enter()
-                    .append("path")
-                        .attr("d", function(d){ return path(d)})
-                        .style("fill", "none")
-                        .style("stroke", "#69b3a2")
-                        .style("stroke-width", 2)
+                // // Add the path
+                // svg.selectAll("myPath")
+                //     .data(link)
+                //     .enter()
+                //     .append("path")
+                //         .attr("d", function(d){ return path(d)})
+                //         .style("fill", "none")
+                //         .style("stroke", "#69b3a2")
+                //         .style("stroke-width", 2)
                 
         }
 
