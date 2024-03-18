@@ -103,10 +103,18 @@
                     .duration(200)
                 d3.select(this)
                     .transition()
-                    .duration(500)
-                    .style("stroke", "white")
+                    .duration(100)
+                    .style("stroke", "red")
+                    .style("stroke-width", 3);
+                
                 tooltip.style("visibility", "visible");
-                tooltip.text("Country: " + countryName + ", Disputes: " + dataDictionary[event.id]['disputes'] + ", Resolved: " + dataDictionary[event.id]['case_status']);
+
+                // print resolved if case_status is not [], otherwise don't print it
+                if (dataDictionary[event.id]['case_status'] == "[]") {
+                    tooltip.text("Country: " + countryName + ", Disputes: " + dataDictionary[event.id]['disputes']);
+                } else {
+                    tooltip.text("Country: " + countryName + ", Disputes: " + dataDictionary[event.id]['disputes'] + ", Resolution Statistics: " + dataDictionary[event.id]['case_status']);
+                }
             }
 
             

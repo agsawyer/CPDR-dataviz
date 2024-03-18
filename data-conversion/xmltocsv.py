@@ -107,7 +107,7 @@ for country in countries:
 countries_and_codes = {}
 
 # TODO: find a better library that doesn't need this 
-exceptions = {'Taiwan': 'TWN', 'South Korea': 'KOR', 'Syria': 'SYR', 'Bolivia': 'BOL', 'Russia': 'RUS', 'Australia': 'AUS'}
+exceptions = {'Taiwan': 'TWN', 'South Korea': 'KOR', 'Syria': 'SYR', 'Bolivia': 'BOL', 'Russia': 'RUS', 'Australia': 'AUS', 'North Korea': 'PRK'}
 
 for country in new_countries:
     code = get_country_code(country)
