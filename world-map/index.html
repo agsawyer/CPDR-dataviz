@@ -52,16 +52,12 @@
                     disputes: +d.disputes,
                     name: d.name,
                     complainant_nations: d.complainant_nations,
-                    case_status: d.case_status
+                    case_status: d.case_status,
+                    longitude: +d.longitude,
+                    latitude: +d.latitude
                 };
+                console.log(dataDictionary[d.code])
             })
-            .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/world-map/country-coord.csv", function (x) {
-                data.set(x.alpha3, +x.longitude, +x.latitude);
-                locationDictionary[x.alpha3] = {
-                    long: +x.longitude,
-                    lat: +x.latitude
-                };
-            }) // location of each country 
             .await(ready);
         
         // function that takes in country name as
@@ -98,21 +94,22 @@
                 // Perform actions you want on click
                 d3.selectAll(".Country")
                     .transition()
-                    .duration(200)
+                    .duration(100)
                 d3.select(this)
                     .transition()
                     .duration(100)
-                    .style("stroke", "red")
+                    .style("stroke", "#FF7F50")
                     .style("stroke-width", 3);
                 
                 tooltip.style("visibility", "visible");
 
-                // print resolved if case_status is not [], otherwise don't print it
+                // print resolved if case_status is not empty, otherwise don't print it
                 if (dataDictionary[event.id]['case_status'] == "[]") {
                     tooltip.text("Country: " + countryName + ", Disputes: " + dataDictionary[event.id]['disputes']);
                 } else {
                     tooltip.text("Country: " + countryName + ", Disputes: " + dataDictionary[event.id]['disputes'] + ", Resolution Statistics: " + dataDictionary[event.id]['case_status']);
                 }
+                console.log(dataDictionary[event.id]['latitude'], dataDictionary[event.id].longitude)
             }
 
             
@@ -131,8 +128,6 @@
                 .style("position", "absolute")
                 .style("z-index", "10")
                 .style("visibility", "hidden")
-                .text("a simple tooltip");
-            
             
             // Draw the map
             svg.append("g")
