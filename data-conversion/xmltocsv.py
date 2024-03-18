@@ -169,13 +169,13 @@ for name, group in grouped_df:
             response_list.append((f"{clean_string(response)}: {percentage:.2f}%"))
 
         print(response_list)
-        # aggregate the information
+        # aggregate the information, TODO: make more efficient 
         aggregated_info = {
             'name': clean_string(name),
             'code': countries_and_codes[clean_string(name)],
             'disputes': count,
             'complainant_nations': {"countries": cleaned_complainant_counts},
-            'case_status': response_list,
+            'case_status': ' '.join([str(elem) for elem in response_list]),
         }
         
         # Create a DataFrame for the aggregated information
@@ -218,6 +218,7 @@ for country, code in to_add.items():
 # Concatenate all DataFrames in the list
 aggregated_df = pd.concat(dfs, ignore_index=True)
 
+print(aggregated_df)
 # Save the aggregated DataFrame to a new CSV file
 aggregated_df.to_csv('output_file.csv', index=False)
 
