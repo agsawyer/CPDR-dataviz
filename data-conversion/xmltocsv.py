@@ -60,8 +60,6 @@ itemNames = df.index.values.tolist()
 # remove NoneType
 itemNames = [item for item in itemNames if item is not None]
 
-print(itemNames)
-
 # finding getting list of the rows to be deleted
 badItems = []
 for i in itemNames:
@@ -71,12 +69,12 @@ for i in itemNames:
 # delete all of those rows, iterate through rows 
 df = df.drop(badItems)
 
-# Convert list columns to strings
+# convert list columns to strings
 for column in df.columns:
     if isinstance(df[column][0], list):
         df[column] = df[column].apply(lambda x: str(x) if x is not None else None)
     
-# # saving as csv file
+# saving as csv file
 df.to_csv("cpdr.csv")
 
 ####################################
@@ -133,8 +131,8 @@ dfs = []
 
 def clean_string(s):
     """
-    Clean up a string with square brackets and quotes.
-    Example: "['Australia']" becomes "Australia".
+    clean up a string with square brackets and quotes
+    exp: "['Australia']" becomes "Australia"
     """
     s = s.strip("[]")  # Remove square brackets
     s = s.replace("'", "")  # Remove single quotes
@@ -151,14 +149,10 @@ for row in reader:
     longitude = row[5]
     country_dict[alpha3] = [latitude, longitude]
 
-# Example usage:
-print(country_dict["AFG"])  # Print data for Afghanistan
-
 # loop through each group
 for name, group in grouped_df:
-    # TODO: unsure what to do with hong kong
+    # ignoring non individual countries 
     if name != "['2 or more respondent nations']" and name != "nan":
-        print(name)
         # count the occurrences of each nation
         count = group.shape[0]
 
@@ -171,7 +165,7 @@ for name, group in grouped_df:
 
         
         # calculate result percentages
-        # Count occurrences of each unique response
+        # count occurrences of each unique response
         response_counts = {}
         for response in responses:
             if response in response_counts:
@@ -179,11 +173,11 @@ for name, group in grouped_df:
             else:
                 response_counts[response] = 1
 
-        # Calculate percentage for each unique response
+        # calculate percentage for each unique response
         total_responses = len(responses)
         percentage_distribution = {response: (count / total_responses) * 100 for response, count in response_counts.items()}
 
-        # Print the results
+        # print results
         response_list = []
         for response, percentage in percentage_distribution.items():
             if response == 'nan':
@@ -194,9 +188,6 @@ for name, group in grouped_df:
             
         code = countries_and_codes[clean_string(name)]
 
-        print(code)
-        print(country_dict[code][0])
-        
         aggregated_info = {
             'name': clean_string(name),
             'code': code,
@@ -207,10 +198,10 @@ for name, group in grouped_df:
             'longitude': country_dict[code][1]
         }
         
-        # Create a DataFrame for the aggregated information
+        # create a df for the aggregated information
         aggregated_df = pd.DataFrame([aggregated_info])
     
-        # Append the DataFrame to the list
+        # append the df to the list
         dfs.append(aggregated_df)
 
   
@@ -218,12 +209,9 @@ to_add = {}
 # including rest of countries 
 with open('all-countries.csv') as file_obj: 
       
-    # Create reader object by passing the file  
-    # object to reader method 
     reader_obj = csv.reader(file_obj) 
       
-    # Iterate over each row in the csv  
-    # file using reader object 
+    # iterate over each row in the csv file using reader object 
     for row in reader_obj: 
         if row[0] not in countries_and_codes:
             to_add[row[0]] = row[1]
@@ -238,15 +226,12 @@ for country, code in to_add.items():
         'case_status': [],
     }
     
-    # Create a DataFrame for the aggregated information
+    # aggregated information df
     aggregated_df = pd.DataFrame([aggregated_info])
-    
-    # Append the DataFrame to the list
     dfs.append(aggregated_df)
 
-# Concatenate all DataFrames in the list
+# concatenate all dfs
 aggregated_df = pd.concat(dfs, ignore_index=True)
 
-# Save the aggregated DataFrame to a new CSV file
+# save aggregated df
 aggregated_df.to_csv('output_file-2.csv', index=False)
-
