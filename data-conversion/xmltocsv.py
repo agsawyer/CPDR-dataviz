@@ -11,7 +11,7 @@ import csv
 ##############################################
 
 # input file
-tree = ElementTree.parse("culturalpropertydisputesresource.WordPress.2023-05-11.xml")
+tree = ElementTree.parse("culturalpropertydisputesresource.WordPress.2024-05-24.xml")
 
 # TODO: fix postmetas code - it can't currently get postmeta data 
 # from lxml import etree
@@ -56,6 +56,11 @@ df = pd.DataFrame.from_dict(itemDict, orient="index")
 
 # get list of all the items (column 1)
 itemNames = df.index.values.tolist()
+
+# remove NoneType
+itemNames = [item for item in itemNames if item is not None]
+
+print(itemNames)
 
 # finding getting list of the rows to be deleted
 badItems = []
@@ -106,8 +111,9 @@ for country in countries:
 
 countries_and_codes = {}
 
-# TODO: find a better library that doesn't need this 
-exceptions = {'Taiwan': 'TWN', 'South Korea': 'KOR', 'Syria': 'SYR', 'Bolivia': 'BOL', 'Russia': 'RUS', 'Australia': 'AUS', 'North Korea': 'PRK'}
+# TODO: find a better library that doesn't need this
+# TODO: ask if data can be more consistent about what they input as a country 
+exceptions = {'Taiwan': 'TWN', 'South Korea': 'KOR', 'Syria': 'SYR', 'Bolivia': 'BOL', 'Russia': 'RUS', 'Australia': 'AUS', 'North Korea': 'PRK', 'Hong Kong S.A.R.': 'HKG', 'Scotland': 'GBR'}
 
 for country in new_countries:
     code = get_country_code(country)
@@ -150,7 +156,9 @@ print(country_dict["AFG"])  # Print data for Afghanistan
 
 # loop through each group
 for name, group in grouped_df:
+    # TODO: unsure what to do with hong kong
     if name != "['2 or more respondent nations']" and name != "nan":
+        print(name)
         # count the occurrences of each nation
         count = group.shape[0]
 
@@ -185,6 +193,10 @@ for name, group in grouped_df:
         # aggregate the information, TODO: make more efficient 
             
         code = countries_and_codes[clean_string(name)]
+
+        print(code)
+        print(country_dict[code][0])
+        
         aggregated_info = {
             'name': clean_string(name),
             'code': code,
@@ -236,5 +248,5 @@ for country, code in to_add.items():
 aggregated_df = pd.concat(dfs, ignore_index=True)
 
 # Save the aggregated DataFrame to a new CSV file
-aggregated_df.to_csv('output_file.csv', index=False)
+aggregated_df.to_csv('output_file-2.csv', index=False)
 
