@@ -46,7 +46,7 @@
         d3.queue()
             .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
             .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectionmap.csv") // Position of circles
-            .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/world-map/output_file-2.csv", function (d) { 
+            .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/world-map/output_file.csv", function (d) { 
                 data.set(d.code, +d.disputes);
                 dataDictionary[d.code] = {
                     disputes: +d.disputes,
