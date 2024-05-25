@@ -114,14 +114,14 @@ for country in countries:
 # TODO: should refactor so countries that do not have cases are included, probably do in opposite order
 exceptions = {'Taiwan': 'TWN', 'South Korea': 'KOR', 'Syria': 'SYR', 'Bolivia': 'BOL', 'Russia': 'RUS', 'Australia': 'AUS', 'North Korea': 'PRK', 'Hong Kong S.A.R.': 'HKG', 'Cambodia':'KHM','Scotland': 'GBR'}
 
-countries_and_codes_new = {}
+countries_and_codes = {}
 country_coord = pd.read_csv('country-coord.csv')
 for index, row in country_coord.iterrows():
-    countries_and_codes_new[row['country']] = row['alpha3']
+    countries_and_codes[row['country']] = row['alpha3']
 
 # exceptions 
 for country in exceptions: 
-    countries_and_codes_new[country] = exceptions[country]
+    countries_and_codes[country] = exceptions[country]
 
 ####################################
 ## generating csv file by country ##
@@ -175,8 +175,8 @@ for name, group in grouped_df:
             
             for index in range(len(current_complains)):
                 try:
-                    print(current_complains[index], countries_and_codes_new[current_complains[index]])
-                    current_code = countries_and_codes_new[current_complains[index]]
+                    print(current_complains[index], countries_and_codes[current_complains[index]])
+                    current_code = countries_and_codes[current_complains[index]]
                     current_complains[index] = [country_dict[current_code][0], country_dict[current_code][1]] #TODO!!!
                 except KeyError as e:
                     print(f"KeyError: {e}")
@@ -213,8 +213,8 @@ for name, group in grouped_df:
         # aggregate the information, TODO: make more efficient 
             
         print(clean_string(name))
-        print(countries_and_codes_new["Bolivia"])
-        code = countries_and_codes_new[clean_string(name)]
+        print(countries_and_codes["Bolivia"])
+        code = countries_and_codes[clean_string(name)]
 
         print(code)
         aggregated_info = {
@@ -242,7 +242,7 @@ with open('all-countries.csv') as file_obj:
       
     # iterate over each row in the csv file using reader object 
     for row in reader_obj: 
-        if row[0] not in countries_and_codes_new:
+        if row[0] not in countries_and_codes:
             to_add[row[0]] = row[1]
 
 # adding to output fle
