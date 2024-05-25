@@ -131,6 +131,8 @@
                     if (previouslyClickedCountry) {
                         d3.select(previouslyClickedCountry)
                             .style("stroke", "transparent");
+                        
+                        svg.selectAll("myPath").remove;
                     }
 
                     tooltip.html(`
@@ -148,16 +150,37 @@
 
                     previouslyClickedCountry = this;
                 }
+
+                console.log(getComplainantNations(countryName))
+                
+                // reformat link list, csv columns are long1, long2, lat1, lat2
+                var link = [];
+                data2.forEach(function (row) {
+                    var source = [+row.long1, +row.lat1];
+                    var target = [+row.long2, +row.lat2];
+                    var topush = { type: "LineString", coordinates: [source, target] };
+                    link.push(topush);
+                });
+
+                // Add the paths for links
+                svg.selectAll("myPath")
+                    .data(link)
+                    .enter().append("path")
+                    .attr("d", path)
+                    .style("fill", "none")
+                    .style("stroke", "#69b3a2")
+                    .style("stroke-width", 2);
             }
 
-            // reformat link list, csv columns are long1, long2, lat1, lat2
-            var link = [];
-            data2.forEach(function (row) {
-                var source = [+row.long1, +row.lat1];
-                var target = [+row.long2, +row.lat2];
-                var topush = { type: "LineString", coordinates: [source, target] };
-                link.push(topush);
-            });
+
+            // // reformat link list, csv columns are long1, long2, lat1, lat2
+            // var link = [];
+            // data2.forEach(function (row) {
+            //     var source = [+row.long1, +row.lat1];
+            //     var target = [+row.long2, +row.lat2];
+            //     var topush = { type: "LineString", coordinates: [source, target] };
+            //     link.push(topush);
+            // });
 
             // draw the map
             svg.append("g")
@@ -176,14 +199,6 @@
                 .on("mouseleave", mouseLeave)
                 .on("click", clickHandler);
             
-            // Add the paths for links
-            svg.selectAll("myPath")
-                .data(link)
-                .enter().append("path")
-                .attr("d", path)
-                .style("fill", "none")
-                .style("stroke", "#69b3a2")
-                .style("stroke-width", 2);
         }
 
     </script>

@@ -9,6 +9,7 @@ import csv
 ##############################################
 ## getting data from exported wordpress xml ## 
 ##############################################
+country_coord = pd.read_csv('country-coord.csv')
 
 # input file
 tree = ElementTree.parse("culturalpropertydisputesresource.WordPress.2024-05-24.xml")
@@ -111,14 +112,22 @@ countries_and_codes = {}
 
 # TODO: find a better library that doesn't need this
 # TODO: ask if data can be more consistent about what they input as a country 
-exceptions = {'Taiwan': 'TWN', 'South Korea': 'KOR', 'Syria': 'SYR', 'Bolivia': 'BOL', 'Russia': 'RUS', 'Australia': 'AUS', 'North Korea': 'PRK', 'Hong Kong S.A.R.': 'HKG', 'Scotland': 'GBR'}
+# TODO: should refactor so countries that do not have cases are included, probably do in opposite order
+exceptions = {'Taiwan': 'TWN', 'South Korea': 'KOR', 'Syria': 'SYR', 'Bolivia': 'BOL', 'Russia': 'RUS', 'Australia': 'AUS', 'North Korea': 'PRK', 'Hong Kong S.A.R.': 'HKG', 'Cambodia':'KHM','Scotland': 'GBR'}
+            #   'Nepal': 'NPL', 'Palestine': 'PSE', 'Nigeria': 'NGA', 'Cyprus': 'CYP'}
+
+countries_and_codes_new = {}
+country_coord = pd.read_csv('country-coord.csv')
+for index, row in country_coord.iterrows():
+    countries_and_codes_new[row['country']] = row['alpha3']
 
 for country in new_countries:
     code = get_country_code(country)
     countries_and_codes[country] = code
-    # exceptions 
-    if country in exceptions: 
-        countries_and_codes[country] = exceptions[country]
+
+# exceptions 
+for country in exceptions: 
+    countries_and_codes_new[country] = exceptions[country]
 
 ####################################
 ## generating csv file by country ##
@@ -153,15 +162,34 @@ for row in reader:
 for name, group in grouped_df:
     # ignoring non individual countries 
     if name != "['2 or more respondent nations']" and name != "nan":
-        # count the occurrences of each nation
         count = group.shape[0]
 
-        complainant_counts = group['cpdr_complainant_nation'].value_counts().to_dict()
+        #### find complainant  nation coordinates #### 
+
+        cleaned_country_names = []
+        complainant_counts = group['cpdr_complainant_nation'].value_counts()
+
+        country_names = complainant_counts.index.tolist()
 
         responses = group['cpdr_case_status'].tolist()
 
-        complainant_counts = group['cpdr_complainant_nation'].value_counts().to_dict()
-        cleaned_complainant_counts = {clean_string(k): v for k, v in complainant_counts.items()}
+        current_complains = []
+
+        if count != 0:
+            current_complains = [clean_string(country) for country in country_names]
+
+            
+            for index in range(len(current_complains)):
+                try:
+                    print(current_complains[index], countries_and_codes_new[current_complains[index]])
+                    current_code = countries_and_codes_new[current_complains[index]]
+                    current_complains[index] = [country_dict[current_code][0], country_dict[current_code][1]] #TODO!!!
+                except KeyError as e:
+                    print(f"KeyError: {e}")
+                    # Handle the KeyError here if needed
+            
+            current_complains = [x for x in current_complains if not isinstance(x, str)]
+            print(current_complains)
 
         
         # calculate result percentages
@@ -188,18 +216,18 @@ for name, group in grouped_df:
                 response = 'Unknown'
             response_dict[clean_string(response)] = f"{percentage:.2f}%"
 
-        print(response_dict)
-
         # aggregate the information, TODO: make more efficient 
             
-        code = countries_and_codes[clean_string(name)]
+        print(clean_string(name))
+        print(countries_and_codes_new["Bolivia"])
+        code = countries_and_codes_new[clean_string(name)]
 
-        print(response_dict["Object(s) relinquished"],)
+        print(code)
         aggregated_info = {
             'name': clean_string(name),
             'code': code,
             'disputes': count,
-            'complainant_nations': {"countries": cleaned_complainant_counts},
+            'complainant_nations': current_complains,
             'case_status': response_dict["Object(s) relinquished"],
             'latitude': country_dict[code][0],
             'longitude': country_dict[code][1]
@@ -229,7 +257,7 @@ for country, code in to_add.items():
         'name': country,
         'code': code,
         'disputes': 0,
-        'complainant_nations': {},
+        'complainant_nations': [],
         'case_status': 'N/A',
     }
     
