@@ -181,7 +181,7 @@ for name, group in grouped_df:
         # Initialize an empty dictionary
         response_dict = {}
 
-        response_dict["Object(s) relinquished"] = ""
+        response_dict["Object(s) relinquished"] = "N/A"
         # Populate the dictionary with response as key and percentage as value
         for response, percentage in percentage_distribution.items():
             if response == 'nan':
@@ -194,6 +194,7 @@ for name, group in grouped_df:
             
         code = countries_and_codes[clean_string(name)]
 
+        print(response_dict["Object(s) relinquished"],)
         aggregated_info = {
             'name': clean_string(name),
             'code': code,
@@ -229,7 +230,7 @@ for country, code in to_add.items():
         'code': code,
         'disputes': 0,
         'complainant_nations': {},
-        'case_status': [],
+        'case_status': 'N/A',
     }
     
     # aggregated information df
