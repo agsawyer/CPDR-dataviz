@@ -25,8 +25,8 @@
             height: 100vh;
         }
         svg {
-            border: 10px solid #8f918d;
-            box-shadow: 0 0 10px #8f918d;
+            border: 5px solid #8f918d;
+            /* box-shadow: 0 0 10px #8f918d; */
             border-radius: 20px;
             background-color: #5d615a;
         }
@@ -36,7 +36,6 @@
             padding: 10px;
             border: 5px solid #8f918d;
             border-radius: 20px;
-            /* box-shadow: 0 0 10px #8f918d; */
             pointer-events: none;
             font-size: 14px;
             color: #333;
@@ -46,38 +45,37 @@
 </head>
 
 <body>
-    <!-- Create an element where the map will take place -->
+    <!-- element map is in and tooltip creation -->
     <svg id="my_dataviz" width="800" height="600"></svg>
-
-    <!-- Tooltip for displaying information -->
     <div class="tooltip"></div>
 
     <script>
-        // The svg
+        // svg ( box where the map is)
         var svg = d3.select("svg"),
             width = +svg.attr("width"),
             height = +svg.attr("height");
 
-        // Map and projection
+        // map and projection
         var projection = d3.geoMercator()
-            .scale(120)
-            .translate([width / 2, height / 2 * 1.2]);
+            .scale(128)
+            .translate([width / 2 , height / 2 * 1.2]);
 
-        // A path generator
+        // for path generation
         var path = d3.geoPath()
             .projection(projection);
 
-        // Data and color scale
+        // data and color scale
         var data = d3.map();
         var colorScale = d3.scaleThreshold()
             .domain([1, 5, 10, 50, 100, 300])
-            // cgu reds, this line for blues: .range(d3.schemeBlues[7]);
+             // cgu reds, this line for blues: .range(d3.schemeBlues[7]);
             .range(["#fdd7d3", "#f4c1b2", "#eaa088", "#dd7e65", "#d15d50", "#c43e3d"]);
 
         // public data dictionary
         var dataDictionary = {};
+        var previouslyClickedCountry = null;
 
-        // Load external data and boot
+        // external data and boot
         d3.queue()
             .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
             .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectionmap.csv")
@@ -97,55 +95,62 @@
         function ready(error, topo, data2) {
             if (error) throw error;
 
-            // Tooltip div
+            // tooltip div
             var tooltip = d3.select(".tooltip");
 
-            let mouseOver = function () {
+            function mouseOver() {
                 d3.selectAll(".Country")
                     .transition()
                     .duration(200);
                 d3.select(this)
                     .transition()
-                    .duration(200)
-                    .style("stroke", "#333")
-                    .style("stroke-width", 2);
+                    .duration(200);
             }
 
-            let mouseLeave = function () {
+            function mouseLeave() {
                 d3.selectAll(".Country")
                     .transition()
                     .duration(200);
                 d3.select(this)
                     .transition()
-                    .duration(200)
-                    .style("stroke", "transparent");
+                    .duration(200);
             }
 
             function clickHandler(d) {
                 var countryName = d.properties.name;
                 var countryData = dataDictionary[d.id] || {};
                 var disputes = countryData.disputes || "N/A";
-                var caseStatus = countryData.case_status || "N/A";
+                var caseStatus = Array.isArray(countryData.case_status) && countryData.case_status.length === 0 ? "N/A" : countryData.case_status;
 
-                tooltip.html(`
-                    <strong>Country:</strong> ${countryName}<br>
-                    <strong>Disputes:</strong> ${disputes}<br>
-                    <strong>Relinquished:</strong> ${caseStatus}<br>
-                `)
-                
+                if (previouslyClickedCountry === this) {
+                    tooltip.style("visibility", "hidden");
+                    d3.select(this)
+                        .style("stroke", "transparent");
+                    previouslyClickedCountry = null;
+                } else {
+                    if (previouslyClickedCountry) {
+                        d3.select(previouslyClickedCountry)
+                            .style("stroke", "transparent");
+                    }
 
-                .style("left", (d3.event.pageX + 15) + "px")
-                .style("top", (d3.event.pageY - 28) + "px")
-                .style("visibility", "visible");
+                    tooltip.html(`
+                        <strong>Country:</strong> ${countryName}<br>
+                        <strong>Disputes:</strong> ${disputes}<br>
+                        <strong>Relinquished:</strong> ${caseStatus}<br>
+                    `)
+                    .style("left", (d3.event.pageX + 15) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px")
+                    .style("visibility", "visible");
 
-                d3.select(this)
-                    .transition()
-                    .duration(100)
-                    .style("stroke", "#b72029")
-                    .style("stroke-width", 3);
+                    d3.select(this)
+                        .style("stroke", "#b72029")
+                        .style("stroke-width", "3px");
+
+                    previouslyClickedCountry = this;
+                }
             }
 
-            // Reformat the list of link. Note that columns in csv file are called long1, long2, lat1, lat2
+            // reformat link list, csv columns are long1, long2, lat1, lat2
             var link = [];
             data2.forEach(function (row) {
                 var source = [+row.long1, +row.lat1];
@@ -154,7 +159,7 @@
                 link.push(topush);
             });
 
-            // Draw the map
+            // draw the map
             svg.append("g")
                 .selectAll("path")
                 .data(topo.features)
@@ -170,7 +175,7 @@
                 .on("mouseover", mouseOver)
                 .on("mouseleave", mouseLeave)
                 .on("click", clickHandler);
-
+            
             // // Add the paths for links
             // svg.selectAll("myPath")
             //     .data(link)
@@ -179,12 +184,8 @@
             //     .style("fill", "none")
             //     .style("stroke", "#69b3a2")
             //     .style("stroke-width", 2);
-
-            // Hide tooltip when not hovering
-            svg.on("mousemove", function() {
-                tooltip.style("visibility", "hidden");
-            });
         }
+
     </script>
 </body>
 
