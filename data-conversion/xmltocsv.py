@@ -202,15 +202,22 @@ for name, group in grouped_df:
                 response_dict[clean_string(response)] = f"{percentage:.2f}%"
 
             # aggregate the information, TODO: make more efficient 
-                
+            
+            # putting coordinates in the right format for D3.js
+            # { type: "LineString", coordinates: [source, target] }
+
+            coords = []
+            source = [float(country_dict[code][1]),float(country_dict[code][0])]
+            for coordinates in current_complains:
+                coords.append("{ type: \"LineString\", coordinates: [" + str(source) + ", " + str(coordinates) + "] }")
+
+
             aggregated_info = {
                 'name': clean_string(name),
                 'code': code,
                 'disputes': count,
-                'complainant_nations': current_complains,
-                'case_status': response_dict["Object(s) relinquished"],
-                'latitude': country_dict[code][0],
-                'longitude': country_dict[code][1]
+                'coords': coords,
+                'case_status': response_dict["Object(s) relinquished"]
             }
             
             # create a df for the aggregated information
@@ -218,7 +225,7 @@ for name, group in grouped_df:
         
             # append the df to the list
             dfs.append(aggregated_df)
-        except Exception as e:
+        except KeyError as e:
             print(f"KeyError: {e}")
 
 
