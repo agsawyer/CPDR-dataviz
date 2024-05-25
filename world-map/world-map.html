@@ -25,17 +25,17 @@
             height: 100vh;
         }
         svg {
-            border: 5px solid #8f918d;
+
             /* box-shadow: 0 0 10px #8f918d; */
             border-radius: 20px;
-            background-color: #5d615a;
+            background-color: #97D2DC;
         }
         .tooltip {
             position: absolute;
             background-color: white;
             padding: 10px;
-            border: 5px solid #8f918d;
-            border-radius: 20px;
+            border: 3px solid #333;
+            border-radius: 10px;
             pointer-events: none;
             font-size: 14px;
             color: #333;
@@ -68,8 +68,7 @@
         var data = d3.map();
         var colorScale = d3.scaleThreshold()
             .domain([1, 5, 10, 50, 100, 300])
-             // cgu reds, this line for blues: .range(d3.schemeBlues[7]);
-            .range(["#fdd7d3", "#f4c1b2", "#eaa088", "#dd7e65", "#d15d50", "#c43e3d"]);
+            .range(d3.schemeRdPu[7]);
 
         // public data dictionary
         var dataDictionary = {};
@@ -79,7 +78,7 @@
         d3.queue()
             .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
             .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectionmap.csv")
-            .defer(d3.csv, "https://raw.githubusercontent.com/alysawyer/cpdr-dataviz/main/world-map/output_file.csv", function (d) {
+            .defer(d3.csv, "output_file.csv", function (d) {
                 data.set(d.code, +d.disputes);
                 dataDictionary[d.code] = {
                     disputes: +d.disputes,
@@ -117,46 +116,11 @@
                     .duration(200);
             }
 
-            function clickHandler(d) {
-                var countryName = d.properties.name;
-                var countryData = dataDictionary[d.id] || {};
-                var disputes = countryData.disputes || "N/A";
-                var caseStatus = Array.isArray(countryData.case_status) && countryData.case_status.length === 0 ? "N/A" : countryData.case_status;
-
-                if (previouslyClickedCountry === this) {
-                    tooltip.style("visibility", "hidden");
-                    d3.select(this)
-                        .style("stroke", "transparent");
-                    previouslyClickedCountry = null;
-                } else {
-                    if (previouslyClickedCountry) {
-                        d3.select(previouslyClickedCountry)
-                            .style("stroke", "transparent");
-                        
-                        svg.selectAll("myPath").remove;
-                    }
-
-                    tooltip.html(`
-                        <strong>Country:</strong> ${countryName}<br>
-                        <strong>Disputes:</strong> ${disputes}<br>
-                        <strong>Relinquished:</strong> ${caseStatus}<br>
-                    `)
-                    .style("left", (d3.event.pageX + 15) + "px")
-                    .style("top", (d3.event.pageY - 28) + "px")
-                    .style("visibility", "visible");
-
-                    d3.select(this)
-                        .style("stroke", "#b72029")
-                        .style("stroke-width", "3px");
-
-                    previouslyClickedCountry = this;
-                }
-
-                console.log(JSON.parse(countryData.complainant_nations))
-                var nations = countryData.complainant_nations;
+            function drawLine(countryData) {
+                var nations = JSON.parse(countryData.complainant_nations)
 
                 var source =[+countryData.longitude, +countryData.latitude];
-                
+
                 // reformat link list, csv columns are long1, long2, lat1, lat2
                 var link = [];
                 nations.forEach(function (row) {
@@ -172,7 +136,52 @@
                     .attr("d", path)
                     .style("fill", "none")
                     .style("stroke", "#69b3a2")
-                    .style("stroke-width", 2);
+                    .style("stroke-width", 2)
+                    .attr('class','Paths');
+            }
+
+            function clearLine(){
+                svg.selectAll(".Paths").remove();
+            }
+
+            function clickHandler(d) {
+                var countryName = d.properties.name;
+                var countryData = dataDictionary[d.id] || {};
+                var disputes = countryData.disputes || "N/A";
+                var caseStatus = Array.isArray(countryData.case_status) && countryData.case_status.length === 0 ? "N/A" : countryData.case_status;
+                
+                clearLine();
+                if (previouslyClickedCountry === this) {
+                    tooltip.style("visibility", "hidden");
+                    d3.select(this)
+                        .style("stroke", "transparent");
+                    previouslyClickedCountry = null;
+                    
+                } else {
+                    if (previouslyClickedCountry) {
+                        d3.select(previouslyClickedCountry)
+                            .style("stroke", "transparent");
+                    }
+
+                    tooltip.html(`
+                        <strong>Country:</strong> ${countryName}<br>
+                        <strong>Disputes:</strong> ${disputes}<br>
+                        <strong>Relinquished:</strong> ${caseStatus}<br>
+                    `)
+                    .style("left", (d3.event.pageX + 15) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px")
+                    .style("visibility", "visible");
+
+                    d3.select(this)
+                        .style("stroke", "#333")
+                        .style("stroke-width", "2px");
+
+                    previouslyClickedCountry = this;
+
+                    if (countryData.complainant_nations != undefined) {
+                        drawLine(countryData);
+                    }
+                }
             }
 
 
