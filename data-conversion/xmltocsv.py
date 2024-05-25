@@ -178,11 +178,17 @@ for name, group in grouped_df:
         percentage_distribution = {response: (count / total_responses) * 100 for response, count in response_counts.items()}
 
         # print results
-        response_list = []
+        # Initialize an empty dictionary
+        response_dict = {}
+
+        response_dict["Object(s) relinquished"] = "N/A"
+        # Populate the dictionary with response as key and percentage as value
         for response, percentage in percentage_distribution.items():
             if response == 'nan':
                 response = 'Unknown'
-            response_list.append((f"{clean_string(response)}: {percentage:.2f}%"))
+            response_dict[clean_string(response)] = f"{percentage:.2f}%"
+
+        print(response_dict)
 
         # aggregate the information, TODO: make more efficient 
             
@@ -193,7 +199,7 @@ for name, group in grouped_df:
             'code': code,
             'disputes': count,
             'complainant_nations': {"countries": cleaned_complainant_counts},
-            'case_status': ' '.join([str(elem) for elem in response_list]),
+            'case_status': response_dict["Object(s) relinquished"],
             'latitude': country_dict[code][0],
             'longitude': country_dict[code][1]
         }
@@ -234,4 +240,4 @@ for country, code in to_add.items():
 aggregated_df = pd.concat(dfs, ignore_index=True)
 
 # save aggregated df
-aggregated_df.to_csv('output_file-2.csv', index=False)
+aggregated_df.to_csv('output_file.csv', index=False)
