@@ -171,7 +171,7 @@ for name, group in grouped_df:
                 for index in range(len(current_complains)):
                     try:
                         current_code = countries_and_codes[current_complains[index]]
-                        current_complains[index] = [country_dict[current_code][0], country_dict[current_code][1]] #TODO!!!
+                        current_complains[index] = [float(country_dict[current_code][0]), float(country_dict[current_code][1])] 
                     except Exception as e:
                         print(f"KeyError: {e}")
                         # Handle the KeyError here if needed
