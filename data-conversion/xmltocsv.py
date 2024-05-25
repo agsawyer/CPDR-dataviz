@@ -107,21 +107,11 @@ for country in countries:
         if country not in new_countries:
             new_countries.append(country) 
 
-
-
-# TODO: find a better library that doesn't need this
-# TODO: ask if data can be more consistent about what they input as a country 
-# TODO: should refactor so countries that do not have cases are included, probably do in opposite order
-exceptions = {'Taiwan': 'TWN', 'South Korea': 'KOR', 'Syria': 'SYR', 'Bolivia': 'BOL', 'Russia': 'RUS', 'Australia': 'AUS', 'North Korea': 'PRK', 'Hong Kong S.A.R.': 'HKG', 'Cambodia':'KHM','Scotland': 'GBR'}
-
 countries_and_codes = {}
 country_coord = pd.read_csv('country-coord.csv')
 for index, row in country_coord.iterrows():
     countries_and_codes[row['country']] = row['alpha3']
 
-# exceptions 
-for country in exceptions: 
-    countries_and_codes[country] = exceptions[country]
 
 ####################################
 ## generating csv file by country ##
@@ -156,82 +146,83 @@ for row in reader:
 for name, group in grouped_df:
     # ignoring non individual countries 
     if name != "['2 or more respondent nations']" and name != "nan":
-        count = group.shape[0]
+        try:
+            # get country code, if possible
+            code = countries_and_codes[clean_string(name)]
 
-        #### find complainant  nation coordinates #### 
+            # count total disputes
+            count = group.shape[0]
 
-        cleaned_country_names = []
-        complainant_counts = group['cpdr_complainant_nation'].value_counts()
+            ##############################################
+            #### find complainant  nation coordinates #### 
+            ##############################################
 
-        country_names = complainant_counts.index.tolist()
+            complainant_counts = group['cpdr_complainant_nation'].value_counts()
 
-        responses = group['cpdr_case_status'].tolist()
+            country_names = complainant_counts.index.tolist()
 
-        current_complains = []
+            responses = group['cpdr_case_status'].tolist()
 
-        if count != 0:
-            current_complains = [clean_string(country) for country in country_names]
+            current_complains = []
 
+            # making a list of coordinates if there are complainants 
+            if count != 0:
+                current_complains = [clean_string(country) for country in country_names]
+                for index in range(len(current_complains)):
+                    try:
+                        current_code = countries_and_codes[current_complains[index]]
+                        current_complains[index] = [country_dict[current_code][0], country_dict[current_code][1]] #TODO!!!
+                    except Exception as e:
+                        print(f"KeyError: {e}")
+                        # Handle the KeyError here if needed
+                current_complains = [x for x in current_complains if not isinstance(x, str)]
+
+            # calculate result percentages
+            # count occurrences of each unique response
+            response_counts = {}
+            for response in responses:
+                if response in response_counts:
+                    response_counts[response] += 1
+                else:
+                    response_counts[response] = 1
+
+            # calculate percentage for each unique response
+            total_responses = len(responses)
+            percentage_distribution = {response: (count / total_responses) * 100 for response, count in response_counts.items()}
+
+            # print results
+            # Initialize an empty dictionary
+            response_dict = {}
+
+            response_dict["Object(s) relinquished"] = "N/A"
+            # Populate the dictionary with response as key and percentage as value
+            for response, percentage in percentage_distribution.items():
+                if response == 'nan':
+                    response = 'Unknown'
+                response_dict[clean_string(response)] = f"{percentage:.2f}%"
+
+            # aggregate the information, TODO: make more efficient 
+                
+            aggregated_info = {
+                'name': clean_string(name),
+                'code': code,
+                'disputes': count,
+                'complainant_nations': current_complains,
+                'case_status': response_dict["Object(s) relinquished"],
+                'latitude': country_dict[code][0],
+                'longitude': country_dict[code][1]
+            }
             
-            for index in range(len(current_complains)):
-                try:
-                    print(current_complains[index], countries_and_codes[current_complains[index]])
-                    current_code = countries_and_codes[current_complains[index]]
-                    current_complains[index] = [country_dict[current_code][0], country_dict[current_code][1]] #TODO!!!
-                except KeyError as e:
-                    print(f"KeyError: {e}")
-                    # Handle the KeyError here if needed
-            
-            current_complains = [x for x in current_complains if not isinstance(x, str)]
-            print(current_complains)
+            # create a df for the aggregated information
+            aggregated_df = pd.DataFrame([aggregated_info])
+        
+            # append the df to the list
+            dfs.append(aggregated_df)
+        except Exception as e:
+            print(f"KeyError: {e}")
+
 
         
-        # calculate result percentages
-        # count occurrences of each unique response
-        response_counts = {}
-        for response in responses:
-            if response in response_counts:
-                response_counts[response] += 1
-            else:
-                response_counts[response] = 1
-
-        # calculate percentage for each unique response
-        total_responses = len(responses)
-        percentage_distribution = {response: (count / total_responses) * 100 for response, count in response_counts.items()}
-
-        # print results
-        # Initialize an empty dictionary
-        response_dict = {}
-
-        response_dict["Object(s) relinquished"] = "N/A"
-        # Populate the dictionary with response as key and percentage as value
-        for response, percentage in percentage_distribution.items():
-            if response == 'nan':
-                response = 'Unknown'
-            response_dict[clean_string(response)] = f"{percentage:.2f}%"
-
-        # aggregate the information, TODO: make more efficient 
-            
-        print(clean_string(name))
-        print(countries_and_codes["Bolivia"])
-        code = countries_and_codes[clean_string(name)]
-
-        print(code)
-        aggregated_info = {
-            'name': clean_string(name),
-            'code': code,
-            'disputes': count,
-            'complainant_nations': current_complains,
-            'case_status': response_dict["Object(s) relinquished"],
-            'latitude': country_dict[code][0],
-            'longitude': country_dict[code][1]
-        }
-        
-        # create a df for the aggregated information
-        aggregated_df = pd.DataFrame([aggregated_info])
-    
-        # append the df to the list
-        dfs.append(aggregated_df)
 
   
 to_add = {}
