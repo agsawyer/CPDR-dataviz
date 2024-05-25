@@ -64,6 +64,7 @@
         var path = d3.geoPath()
             .projection(projection);
 
+
         // data and color scale
         var data = d3.map();
         var colorScale = d3.scaleThreshold()
@@ -116,12 +117,13 @@
                     .duration(200);
             }
 
+            // function to draw lines between the countries
+            // TODO: fix x and y coord and draw between those instead
             function drawLine(countryData) {
-                var nations = JSON.parse(countryData.complainant_nations)
-
-                var source =[+countryData.longitude, +countryData.latitude];
-
-                // reformat link list, csv columns are long1, long2, lat1, lat2
+                var nations = JSON.parse(countryData.complainant_nations);
+                var source = [+countryData.longitude, +countryData.latitude];
+                
+                // Reformat link list, csv columns are long1, long2, lat1, lat2
                 var link = [];
                 nations.forEach(function (row) {
                     var target = [parseFloat(row[0]), parseFloat(row[1])];
@@ -135,20 +137,37 @@
                     .enter().append("path")
                     .attr("d", path)
                     .style("fill", "none")
-                    .style("stroke", "#69b3a2")
-                    .style("stroke-width", 2)
-                    .attr('class','Paths');
+                    .style("stroke", "#dd3497")
+                    .style("stroke-width", 3)
+                    .attr('class', 'Paths')
+                    .call(animatePath);
             }
 
+            // animates the paths
+            function animatePath(selection) {
+                selection.each(function (d) {
+                    var totalLength = this.getTotalLength();
+                    d3.select(this)
+                        .attr("stroke-dasharray", totalLength + " " + totalLength)
+                        .attr("stroke-dashoffset", totalLength)
+                        .transition()
+                        .duration(1000)
+                        .ease(d3.easeLinear)
+                        .attr("stroke-dashoffset", 0);
+                });
+            }
+
+            // deletes all lines
             function clearLine(){
                 svg.selectAll(".Paths").remove();
             }
 
+            // when a country is clicked, open a tooltip about it
             function clickHandler(d) {
                 var countryName = d.properties.name;
                 var countryData = dataDictionary[d.id] || {};
                 var disputes = countryData.disputes || "N/A";
-                var caseStatus = Array.isArray(countryData.case_status) && countryData.case_status.length === 0 ? "N/A" : countryData.case_status;
+                var caseStatus = Array.isArray(countryData.case_status) && countryData.case_status.length === 0 ? "N/A" : countryData.case_status || "N/A";
                 
                 clearLine();
                 if (previouslyClickedCountry === this) {
