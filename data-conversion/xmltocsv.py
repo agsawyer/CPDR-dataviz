@@ -108,22 +108,16 @@ for country in countries:
             new_countries.append(country) 
 
 
-countries_and_codes = {}
 
 # TODO: find a better library that doesn't need this
 # TODO: ask if data can be more consistent about what they input as a country 
 # TODO: should refactor so countries that do not have cases are included, probably do in opposite order
 exceptions = {'Taiwan': 'TWN', 'South Korea': 'KOR', 'Syria': 'SYR', 'Bolivia': 'BOL', 'Russia': 'RUS', 'Australia': 'AUS', 'North Korea': 'PRK', 'Hong Kong S.A.R.': 'HKG', 'Cambodia':'KHM','Scotland': 'GBR'}
-            #   'Nepal': 'NPL', 'Palestine': 'PSE', 'Nigeria': 'NGA', 'Cyprus': 'CYP'}
 
 countries_and_codes_new = {}
 country_coord = pd.read_csv('country-coord.csv')
 for index, row in country_coord.iterrows():
     countries_and_codes_new[row['country']] = row['alpha3']
-
-for country in new_countries:
-    code = get_country_code(country)
-    countries_and_codes[country] = code
 
 # exceptions 
 for country in exceptions: 
@@ -248,7 +242,7 @@ with open('all-countries.csv') as file_obj:
       
     # iterate over each row in the csv file using reader object 
     for row in reader_obj: 
-        if row[0] not in countries_and_codes:
+        if row[0] not in countries_and_codes_new:
             to_add[row[0]] = row[1]
 
 # adding to output fle
