@@ -176,14 +176,14 @@
                 .on("mouseleave", mouseLeave)
                 .on("click", clickHandler);
             
-            // // Add the paths for links
-            // svg.selectAll("myPath")
-            //     .data(link)
-            //     .enter().append("path")
-            //     .attr("d", path)
-            //     .style("fill", "none")
-            //     .style("stroke", "#69b3a2")
-            //     .style("stroke-width", 2);
+            // Add the paths for links
+            svg.selectAll("myPath")
+                .data(link)
+                .enter().append("path")
+                .attr("d", path)
+                .style("fill", "none")
+                .style("stroke", "#69b3a2")
+                .style("stroke-width", 2);
         }
 
     </script>
