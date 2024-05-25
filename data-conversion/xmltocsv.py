@@ -253,5 +253,11 @@ for country, code in to_add.items():
 # concatenate all dfs
 aggregated_df = pd.concat(dfs, ignore_index=True)
 
-# save aggregated df
-aggregated_df.to_csv('output_file.csv', index=False)
+
+# custom CSV writer
+class CustomDialect(csv.excel):
+    quoting = csv.QUOTE_NONE
+    escapechar = '\\'
+
+# save df without quotes
+aggregated_df.to_csv('output.csv', index=False, quoting=csv.QUOTE_NONE, escapechar='\\')

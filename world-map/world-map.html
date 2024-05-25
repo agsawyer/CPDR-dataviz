@@ -92,6 +92,7 @@
             })
             .await(ready);
 
+
         function ready(error, topo, data2) {
             if (error) throw error;
 
@@ -151,13 +152,17 @@
                     previouslyClickedCountry = this;
                 }
 
-                console.log(getComplainantNations(countryName))
+                console.log(countryData.complainant_nations)
+                var nations = countryData.complainant_nations;
+
+                var source =[+countryData.longitude, +countryData.latitude];
+                
+                console.log(JSON.parse(nations));
                 
                 // reformat link list, csv columns are long1, long2, lat1, lat2
                 var link = [];
-                data2.forEach(function (row) {
-                    var source = [+row.long1, +row.lat1];
-                    var target = [+row.long2, +row.lat2];
+                nations.forEach(function (row) {
+                    var target = [parseFloat(row[0]), parseFloat(row[1])];
                     var topush = { type: "LineString", coordinates: [source, target] };
                     link.push(topush);
                 });
