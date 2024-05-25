@@ -152,12 +152,12 @@
                     previouslyClickedCountry = this;
                 }
 
-                console.log(countryData.complainant_nations)
+                // console.log(typeof countryData.complainant_nations)
                 var nations = countryData.complainant_nations;
 
                 var source =[+countryData.longitude, +countryData.latitude];
                 
-                console.log(JSON.parse(nations));
+                // console.log(JSON.parse(nations));
                 
                 // reformat link list, csv columns are long1, long2, lat1, lat2
                 var link = [];
