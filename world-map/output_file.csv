@@ -3,7 +3,7 @@ Australia,AUS,9,"{'countries': {'India': 4, 'Cambodia': 1, 'China': 1, 'Nepal': 
 Austria,AUT,5,"{'countries': {'Nigeria': 1, 'Cyprus': 1, 'Poland': 1, 'Mexico': 1, 'Greece': 1}}",60.00%,47.3333,13.3333
 Bangladesh,BGD,1,{'countries': {'India': 1}},100.00%,24.0,90.0
 Belgium,BEL,8,"{'countries': {'Egypt': 2, 'Democratic Republic of the Congo': 1, 'Italy': 1, 'Guatemala': 1, 'France': 1, 'Congo (Kinshasa)': 1, 'Rwanda': 1}}",100.00%,50.8333,4.0
-Bolivia,BOL,1,{'countries': {'Peru': 1}},N/A,-17.0,-65.0
+Bolivia,BOL,1,{'countries': {'Peru': 1}},,-17.0,-65.0
 Bulgaria,BGR,1,{'countries': {'United Kingdom': 1}},100.00%,43.0,25.0
 Canada,CAN,10,"{'countries': {'Egypt': 3, 'India': 2, 'Canadian Tribal Nation': 2, 'Bolivia': 1, 'China': 1, 'Kenya': 1}}",80.00%,60.0,-95.0
 Chile,CHL,1,{'countries': {'Peru': 1}},100.00%,-30.0,-71.0
@@ -14,17 +14,17 @@ France,FRA,29,"{'countries': {'Nigeria': 6, 'China': 3, 'Vietnam': 2, 'Senegal':
 Germany,DEU,29,"{'countries': {'Turkey': 5, 'Egypt': 3, 'Iraq': 2, 'Mexico': 2, 'Nigeria': 2, 'Cyprus': 2, 'Cameroon': 1, 'Zimbabwe': 1, 'Romania': 1, 'Poland': 1, 'Namibia': 1, 'Germany': 1, 'United States': 1, 'Iceland': 1, 'India': 1, 'United Kingdom': 1, 'Greece': 1, 'Estonia': 1, 'Guatemala': 1}}",68.97%,51.0,9.0
 Greece,GRC,2,"{'countries': {'Germany': 1, 'Turkey': 1}}",50.00%,39.0,22.0
 Hong Kong S.A.R.,HKG,1,{'countries': {'India': 1}},100.00%,22.25,114.1667
-Hungary,HUN,1,{'countries': {'Armenia': 1}},N/A,47.0,20.0
+Hungary,HUN,1,{'countries': {'Armenia': 1}},,47.0,20.0
 India,IND,4,"{'countries': {'India': 2, 'China': 1, 'Pakistan': 1}}",50.00%,20.0,77.0
-Iraq,IRQ,1,{'countries': {'United States': 1}},N/A,33.0,44.0
-Israel,ISR,1,{'countries': {'Germany': 1}},N/A,31.5,34.75
+Iraq,IRQ,1,{'countries': {'United States': 1}},,33.0,44.0
+Israel,ISR,1,{'countries': {'Germany': 1}},,31.5,34.75
 Italy,ITA,9,"{'countries': {'Ecuador': 2, 'Egypt': 2, 'New Zealand': 1, 'Libya': 1, 'Mexico': 1, 'Ethiopia': 1, 'United States': 1}}",88.89%,42.8333,12.8333
 Japan,JPN,12,"{'countries': {'South Korea': 8, 'Vietnam': 2, 'United States': 1, 'Japan': 1}}",91.67%,36.0,138.0
 Jordan,JOR,2,{'countries': {'Iraq': 2}},100.00%,31.0,36.0
-Mexico,MEX,1,{'countries': {'France': 1}},N/A,23.0,-102.0
-Namibia,NAM,2,{'countries': {'China': 2}},N/A,-22.0,17.0
+Mexico,MEX,1,{'countries': {'France': 1}},,23.0,-102.0
+Namibia,NAM,2,{'countries': {'China': 2}},,-22.0,17.0
 Netherlands,NLD,13,"{'countries': {'Indonesia': 2, 'China': 1, 'Cyprus': 1, 'Russia': 1, 'Panama': 1, 'Sri Lanka': 1, 'Mexico': 1, 'Ghana': 1, 'Ethiopia': 1, 'Egypt': 1, 'Iraq': 1, 'United States Tribal Nations': 1}}",69.23%,52.5,5.75
-New Zealand,NZL,1,{'countries': {'Nepal': 1}},N/A,-41.0,174.0
+New Zealand,NZL,1,{'countries': {'Nepal': 1}},,-41.0,174.0
 Norway,NOR,1,{'countries': {'China': 1}},100.00%,62.0,10.0
 Philippines,PHL,1,{'countries': {'Philippines': 1}},100.00%,13.0,122.0
 Romania,ROU,1,{'countries': {'United Kingdom': 1}},100.00%,46.0,25.0
@@ -32,13 +32,13 @@ Russia,RUS,3,"{'countries': {'Greece': 1, 'Iran': 1, 'Germany': 1}}",33.33%,60.0
 Saudi Arabia,SAU,2,{'countries': {'Iraq': 2}},100.00%,25.0,45.0
 Scotland,GBR,2,"{'countries': {'Canada': 1, 'Egypt': 1}}",50.00%,54.0,-2.0
 Serbia,SRB,1,{'countries': {'Kosovo': 1}},100.00%,44.0,21.0
-South Africa,ZAF,1,{'countries': {'South Africa': 1}},N/A,-29.0,24.0
+South Africa,ZAF,1,{'countries': {'South Africa': 1}},,-29.0,24.0
 South Korea,KOR,9,{'countries': {'Japan': 9}},11.11%,37.0,127.5
-Spain,ESP,3,"{'countries': {'Egypt': 1, 'Guatemala': 1, 'Colombia': 1}}",N/A,40.0,-4.0
+Spain,ESP,3,"{'countries': {'Egypt': 1, 'Guatemala': 1, 'Colombia': 1}}",,40.0,-4.0
 Sweden,SWE,2,"{'countries': {'Peru': 1, 'Canadian Tribal Nation': 1}}",100.00%,62.0,15.0
 Switzerland,CHE,11,"{'countries': {'Italy': 3, 'Egypt': 1, 'New Zealand': 1, 'France': 1, 'Japan': 1, 'Brazil': 1, 'Germany': 1, 'Romania': 1, 'Iraq': 1}}",90.91%,47.0,8.0
 Syria,SYR,1,{'countries': {'Iraq': 1}},100.00%,35.0,38.0
-Taiwan,TWN,1,{'countries': {'China': 1}},N/A,23.5,121.0
+Taiwan,TWN,1,{'countries': {'China': 1}},,23.5,121.0
 Thailand,THA,10,{'countries': {'Cambodia': 10}},80.00%,15.0,100.0
 Tunisia,TUN,1,{'countries': {'Algeria': 1}},100.00%,34.0,9.0
 Turkey,TUR,3,"{'countries': {'Cyprus': 1, 'Greece': 1, 'Syria': 1}}",66.67%,39.0,35.0

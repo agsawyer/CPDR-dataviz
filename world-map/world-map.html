@@ -81,7 +81,7 @@
         d3.queue()
             .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
             .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectionmap.csv")
-            .defer(d3.csv, "https://raw.githubusercontent.com/agsawyer/CPDR-dataviz/main/world-map/output_file.csv", function (d) {
+            .defer(d3.csv, "https://raw.githubusercontent.com/alysawyer/cpdr-dataviz/main/world-map/output_file.csv", function (d) {
                 data.set(d.code, +d.disputes);
                 dataDictionary[d.code] = {
                     disputes: +d.disputes,
@@ -124,13 +124,13 @@
             function clickHandler(d) {
                 var countryName = d.properties.name;
                 var countryData = dataDictionary[d.id] || {};
-                var disputes = countryData.disputes || "No data";
+                var disputes = countryData.disputes || "N/A";
                 var caseStatus = countryData.case_status || "N/A";
 
                 tooltip.html(`
                     <strong>Country:</strong> ${countryName}<br>
                     <strong>Disputes:</strong> ${disputes}<br>
-                    <strong>Relinquished:</strong> ${caseStatus}
+                    <strong>Relinquished:</strong> ${caseStatus}<br>
                 `)
                 
 

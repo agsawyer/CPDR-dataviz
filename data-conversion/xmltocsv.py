@@ -181,7 +181,7 @@ for name, group in grouped_df:
         # Initialize an empty dictionary
         response_dict = {}
 
-        response_dict["Object(s) relinquished"] = "N/A"
+        response_dict["Object(s) relinquished"] = ""
         # Populate the dictionary with response as key and percentage as value
         for response, percentage in percentage_distribution.items():
             if response == 'nan':
