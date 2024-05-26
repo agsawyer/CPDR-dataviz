@@ -382,14 +382,15 @@
                     }
                 });
 
-                // Add the paths for links
+                // Add the paths for links between countries
                 svg.selectAll("myPath")
                     .data(link)
                     .enter().append("path")
                     .attr("d", path)
                     .style("fill", "none")
                     .style("stroke", "#dd3497")
-                    .style("stroke-width", 2)
+                    .style("stroke-width", 1.5)
+                    .style("stroke-opacity", .7)
                     .attr('class', 'Paths')
                     .call(animatePath);
             }
@@ -416,6 +417,13 @@
                 svg.selectAll(".Paths").remove();
             }
 
+            // Function to bring an element to the front
+            d3.selection.prototype.moveToFront = function() {
+                return this.each(function() {
+                    this.parentNode.appendChild(this);
+                });
+            };
+
             // when a country is clicked, open a tooltip about it
             function clickHandler(d) {
                 var countryName = d.properties.name;
@@ -427,13 +435,15 @@
                 if (previouslyClickedCountry === this) {
                     tooltip.style("visibility", "hidden");
                     d3.select(this)
-                        .style("stroke", "transparent");
+                    .style("stroke", "#333")
+                    .style("stroke-width", "1px");
                     previouslyClickedCountry = null;
                     
                 } else {
                     if (previouslyClickedCountry) {
                         d3.select(previouslyClickedCountry)
-                            .style("stroke", "transparent");
+                        .style("stroke", "#333")
+                        .style("stroke-width", "1px");
                     }
 
                     tooltip.html(`
@@ -447,7 +457,8 @@
 
                     d3.select(this)
                         .style("stroke", "#333")
-                        .style("stroke-width", "2px");
+                        .style("stroke-width", "3px")
+                        .moveToFront();  // Bring the clicked country to the front
 
                     previouslyClickedCountry = this;
 
@@ -456,6 +467,7 @@
                     }
                 }
             }
+
 
             // draw the map
             svg.append("g")
@@ -467,7 +479,8 @@
                     d.total = data.get(d.id) || 0;
                     return colorScale(d.total);
                 })
-                .style("stroke", "transparent")
+                .style("stroke", "#333") 
+                .style("stroke-width", "1px") 
                 .attr("class", "Country")
                 .style("opacity", 0.8)
                 .on("mouseover", mouseOver)
